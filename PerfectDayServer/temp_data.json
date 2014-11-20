@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "pdapp.event", "fields": {"code": "qwe", "name": "asd", "place": "dsa", "date": "asd", "isFormal": true, "organizer": 2}}]
