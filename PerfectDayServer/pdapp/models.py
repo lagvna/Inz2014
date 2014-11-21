@@ -10,7 +10,7 @@ class Event(models.Model):
     note = models.CharField(max_length=1000)
     isFormal = models.BooleanField(default = False)
     code = models.CharField(max_length=200)
-    organizer = models.ForeignKey(User, unique = True)
+    organizer = models.ForeignKey(User)
 
 class Firm(models.Model):
     name = models.CharField(max_length = 200)

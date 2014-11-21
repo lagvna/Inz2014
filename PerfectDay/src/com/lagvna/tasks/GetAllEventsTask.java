@@ -1,6 +1,7 @@
 package com.lagvna.tasks;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -8,26 +9,27 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.lagvna.customtypes.Event;
 import com.lagvna.helpers.DataHelper;
-import com.lagvna.perfectday.UpdateEventActivity;
+import com.lagvna.helpers.JSONParser;
+import com.lagvna.perfectday.SelectEventActivity;
 
-public class UpdateEventTask extends AsyncTask<Void, Void, Void> {
-	private UpdateEventActivity callingActivity;
+public class GetAllEventsTask extends AsyncTask<Void, Void, Void> {
+	private SelectEventActivity callingActivity;
 	private String url;
-	private String result;
+	private ArrayList<String> result;
+	private ArrayList<Event> eventArr;
+	private String message;
 
-	public UpdateEventTask(UpdateEventActivity callingActivity,
-			String eventName, String eventDate, String eventPlace,
-			String eventDescription, int isFormal) {
+	public GetAllEventsTask(SelectEventActivity callingActivity) {
 		this.callingActivity = callingActivity;
-		url = DataHelper.getInstance().getServerUrl()
-				+ "updateevent?eventname=" + eventName + "&eventdate="
-				+ eventDate + "&eventplace=" + eventPlace + "&eventdesc="
-				+ eventDescription + "&isformal=" + isFormal;
+		url = DataHelper.getInstance().getServerUrl() + "getallevents";
 	}
 
 	@Override
@@ -39,6 +41,7 @@ public class UpdateEventTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		try {
+
 			String session = DataHelper.getInstance().getSession();
 			HttpClient httpClient = DataHelper.getInstance().getClient();
 			HttpGet httpGet = new HttpGet(url);
@@ -48,14 +51,26 @@ public class UpdateEventTask extends AsyncTask<Void, Void, Void> {
 			httpResponse = httpClient.execute((HttpUriRequest) httpGet);
 
 			HttpEntity entity = httpResponse.getEntity();
+			String res = EntityUtils.toString(entity);
+			System.out.println(res);
+			JSONParser jp = new JSONParser(res);
+			result = jp.getGetAllEventsTaskResult();
 			if (entity != null) {
-				result = "Dodano wydarzenie pomyślnie";
+				if (result.get(0).equals("success")) {
+					message = result.get(1);
+					String events = result.get(2);
+					eventArr = jp.getEvents(events);
+				} else {
+					message = "Coś poszło nie tak";
+				}
 			} else {
-				result = "Błąd połączenia z serwerem";
+				message = "Błąd połączenia z serwerem";
 			}
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
@@ -65,10 +80,10 @@ public class UpdateEventTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void arg) {
 		callingActivity.hideProgressDial();
-
+		callingActivity.createList(eventArr);
 		callingActivity.runOnUiThread(new Runnable() {
 			public void run() {
-				Toast.makeText(callingActivity, result, Toast.LENGTH_SHORT)
+				Toast.makeText(callingActivity, message, Toast.LENGTH_SHORT)
 						.show();
 			}
 		});

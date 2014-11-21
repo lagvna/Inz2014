@@ -10,6 +10,8 @@ public class DataHelper {
 	private String message;
 	private String accessToken;
 	private String serverUrl;
+	private String login;
+	private String eventId;
 
 	private static final DataHelper dh = new DataHelper();
 
@@ -75,5 +77,21 @@ public class DataHelper {
 
 	public void setServerUrl(String serverUrl) {
 		this.serverUrl = serverUrl;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
 	}
 }

@@ -3,6 +3,8 @@ package com.lagvna.perfectday;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.http.Header;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -52,7 +54,7 @@ public class LoginActivity extends FragmentActivity {
 
 		uiHelper = new UiLifecycleHelper(this, statusCallback);
 		uiHelper.onCreate(savedInstanceState);
-
+		
 		DataHelper.getInstance().setServerUrl(
 				"http://192.168.1.101:8000/pdapp/");
 
@@ -115,7 +117,6 @@ public class LoginActivity extends FragmentActivity {
 				Intent intent = new Intent(LoginActivity.this,
 						SelectEventActivity.class);
 				LoginActivity.this.startActivity(intent);
-				// eventTypeDialog.show();
 			}
 		});
 
@@ -132,13 +133,28 @@ public class LoginActivity extends FragmentActivity {
 		progressDialog.hide();
 	}
 
+	public void getCookies(Header[] headers) {
+		String[] tmp = new String[3];
+		int i = 0;
+
+		for (Header h : headers) {
+			if (h.getName().trim().equals("Set-Cookie")) {
+				tmp[i] = h.getValue().split(";")[0].trim();
+				System.err.println(tmp[i]);
+				i++;
+			}
+		}
+		DataHelper.getInstance().setCookies(tmp);
+		System.out.println("SESJA: "+ DataHelper.getInstance().getSession());
+	}
+	
 	private Session.StatusCallback statusCallback = new Session.StatusCallback() {
 		@Override
 		public void call(Session session, SessionState state,
 				Exception exception) {
 			if (state.isOpened()) {
 				buttonsEnabled(true);
-				Log.d("FacebookSampleActivity", "Facebook session opened");
+				Log.d("LoginActivity", "Facebook session opened");
 
 				String accessToken = session.getAccessToken();
 				DataHelper.getInstance().setAccessToken(accessToken);
@@ -148,7 +164,7 @@ public class LoginActivity extends FragmentActivity {
 
 			} else if (state.isClosed()) {
 				buttonsEnabled(false);
-				Log.d("FacebookSampleActivity", "Facebook session closed");
+				Log.d("LoginActivity", "Facebook session closed");
 			}
 		}
 	};

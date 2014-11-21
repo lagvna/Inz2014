@@ -17,7 +17,13 @@ public class EventActivity extends FragmentActivity implements
 	private ActionBar actionBar;
 	public TabsPagerAdapter mAdapter;
 	private String[] tabs = { "Podsumowanie", "Tablica", "Firmy", "Prezenty" };
-	//private ProgressDialog progressDialog;
+	public String name;
+	public String place;
+	public String date;
+	public String description;
+	public String code;
+
+	// private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +35,10 @@ public class EventActivity extends FragmentActivity implements
 		actionBar.setDisplayShowHomeEnabled(false);
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayUseLogoEnabled(false);
+
+		getExtras();
+		//System.out.println(name);
+
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
 		viewPager.setAdapter(mAdapter);
@@ -55,6 +65,15 @@ public class EventActivity extends FragmentActivity implements
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
+	}
+
+	private void getExtras() {
+		Bundle extras = getIntent().getExtras();
+		name = extras.getString("name");
+		place = extras.getString("place");
+		date = extras.getString("date");
+		code = extras.getString("code");
+		description = extras.getString("description");
 	}
 
 	@Override

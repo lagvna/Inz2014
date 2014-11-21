@@ -1,22 +1,13 @@
 package com.lagvna.perfectday;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -30,15 +21,23 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.lagvna.adapters.ListViewAdapter;
-import com.lagvna.helpers.DataHelper;
+import com.lagvna.customtypes.Event;
 import com.lagvna.lists.CustomRow;
+import com.lagvna.tasks.GetAllEventsTask;
 
 public class SelectEventActivity extends ListActivity {
 	private Button addEvent;
 	private AlertDialog.Builder eventTypeDialog;
 	private int eventType;
 	private ArrayList<CustomRow> CustomRow_data;
+	private ArrayList<Event> eventArr;
 	private ListViewAdapter adapter;
+	private String name;
+	private String place;
+	private String date;
+	private String description;
+	private String code;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +47,9 @@ public class SelectEventActivity extends ListActivity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_select_event);
 
-		CustomRow_data = new ArrayList<CustomRow>();
+		new GetAllEventsTask(this).execute();
 
-		createList();
+		CustomRow_data = new ArrayList<CustomRow>();
 
 		adapter = new ListViewAdapter(this, R.layout.element, CustomRow_data);
 
@@ -65,8 +64,13 @@ public class SelectEventActivity extends ListActivity {
 					int position, long id) {
 				Intent i = new Intent(SelectEventActivity.this,
 						EventActivity.class);
-				i.putExtra("title", CustomRow_data.get(position).title);
-				SelectEventActivity.this.startActivity(i);
+				i.putExtra("name", eventArr.get(position).getName());
+				i.putExtra("place", eventArr.get(position).getPlace());
+				i.putExtra("date", eventArr.get(position).getDate());
+				i.putExtra("code", eventArr.get(position).getCode());
+				i.putExtra("description", eventArr.get(position).getNote());
+
+				SelectEventActivity.this.startActivityForResult(i, 1);
 			}
 		});
 
@@ -87,51 +91,40 @@ public class SelectEventActivity extends ListActivity {
 		eventTypeDialog.setPositiveButton("Formalne",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						setEventType(0);
+						setEventType(1);
 
 						Intent intent = new Intent(SelectEventActivity.this,
 								UpdateEventActivity.class);
 						intent.putExtra("eventType", eventType);
-						SelectEventActivity.this.startActivity(intent);
-
-						// String url =
-						// "http://192.168.1.101:8000/pdapp/checkuser";
-						// new CheckUserTask().execute(new String[] { url });
-
+						intent.putExtra("isNew", true);
+						SelectEventActivity.this.startActivityForResult(intent,
+								1);
 					}
 				});
 		eventTypeDialog.setNegativeButton("Nieformalne",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						setEventType(1);
 						Intent intent = new Intent(SelectEventActivity.this,
-								EventActivity.class);
+								UpdateEventActivity.class);
 						intent.putExtra("eventType", eventType);
-						SelectEventActivity.this.startActivity(intent);
+						intent.putExtra("isNew", true);
+						SelectEventActivity.this.startActivityForResult(intent,
+								1);
 					}
 				});
 
 	}
 
-	private void createList() {
-		CustomRow_data.add(new CustomRow(R.drawable.lvsel, "Impreza 1",
-				"18.11.2014"));
+	public void createList(ArrayList<Event> eventArr) {
+		this.eventArr = eventArr;
+		adapter.notifyDataSetChanged();
+		CustomRow_data.clear();
+		for (int i = 0; i < eventArr.size(); i++) {
+			String date = eventArr.get(i).getDate();
+			String title = eventArr.get(i).getName();
+			CustomRow_data.add(new CustomRow(R.drawable.lvsel, title, date));
+		}
 
-		/*
-		 * File f = new
-		 * File(Environment.getExternalStoragePublicDirectory(Environment
-		 * .DIRECTORY_DCIM)+"/"); String[] names = f.list(); SimpleDateFormat
-		 * sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		 * 
-		 * CustomRow_data.clear();
-		 * 
-		 * for(int i = 0; i < names.length; i++) {
-		 * if(names[i].startsWith("cbb")) { File tmp = new
-		 * File(Environment.getExternalStoragePublicDirectory
-		 * (Environment.DIRECTORY_DCIM)+"/"+names[i]); String date =
-		 * sdf.format(tmp.lastModified()); String title = names[i];
-		 * CustomRow_data.add(new CustomRow(R.drawable.lvsel, title, date)); } }
-		 */
 	}
 
 	public int getEventType() {
@@ -146,47 +139,39 @@ public class SelectEventActivity extends ListActivity {
 		Toast.makeText(this, Html.fromHtml(result), Toast.LENGTH_SHORT).show();
 	}
 
-	private class CheckUserTask extends AsyncTask<String, Void, String> {
-		@Override
-		protected String doInBackground(String... params) {
-			String result = "";
-			// String accessToken = params[1];
-			String url = params[0];
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 
-			try {
+		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+			System.out.println("Jestem tutaj");
+			Bundle extras = data.getExtras();
+			name = (String) extras.getString("name");
+			place = (String) extras.getString("place");
+			date = (String) extras.getString("date");
+			description = (String) extras.getString("description");
+			code = (String) extras.getString("code");
 
-				String session = DataHelper.getInstance().getSession();
-				HttpClient httpClient = new DefaultHttpClient();
-				HttpGet httpGet = new HttpGet(url);
-				httpGet.addHeader("Cookie", session);
-				System.err.println("gowno: " + session);
+			System.out.println(name);
 
-				HttpResponse httpResponse = httpClient
-						.execute((HttpUriRequest) httpGet);
-				try {
-					HttpEntity entity = httpResponse.getEntity();
-					if (entity != null) {
-						result = EntityUtils.toString(entity);
-					} else {
-						result = "sth gone wrong";
-					}
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				// getCookies(httpResponse.getAllHeaders());
-			} catch (Exception e) {
-			}
-
-			System.err.println(result);
-			return result;
+			Intent intent = new Intent(SelectEventActivity.this,
+					EventActivity.class);
+			intent.putExtra("name", name);
+			intent.putExtra("place", place);
+			intent.putExtra("date", date);
+			intent.putExtra("description", description);
+			intent.putExtra("code", code);
+			SelectEventActivity.this.startActivity(intent);
 		}
+	}
 
-		@Override
-		protected void onPostExecute(String result) {
-			showToast(result);
-		}
+	public void showProgressDial() {
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setMessage("Łączenie z serwerem");
+		progressDialog.show();
+	}
+
+	public void hideProgressDial() {
+		progressDialog.hide();
 	}
 }
