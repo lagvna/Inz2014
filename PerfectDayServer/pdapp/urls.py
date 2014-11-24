@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^updateevent/', views.android_updateevent, name = 'updateevent'),
     url(r'^addevent/', views.android_addevent, name = 'addevent'),
     url(r'^getallevents/', views.android_getallevents, name = 'getallevents'),
+    url(r'^addguest/', views.android_addguest, name = 'addguest'),
 )

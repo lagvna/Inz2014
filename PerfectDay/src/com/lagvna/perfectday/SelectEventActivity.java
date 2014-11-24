@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.lagvna.adapters.ListViewAdapter;
 import com.lagvna.customtypes.Event;
+import com.lagvna.helpers.DataHelper;
 import com.lagvna.lists.CustomRow;
 import com.lagvna.tasks.GetAllEventsTask;
 
@@ -70,7 +71,9 @@ public class SelectEventActivity extends ListActivity {
 				i.putExtra("code", eventArr.get(position).getCode());
 				i.putExtra("description", eventArr.get(position).getNote());
 
-				SelectEventActivity.this.startActivityForResult(i, 1);
+				
+				DataHelper.getInstance().setEventId(eventArr.get(position).getEventId());
+				SelectEventActivity.this.startActivity(i);
 			}
 		});
 

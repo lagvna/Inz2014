@@ -31,6 +31,37 @@ def android_checkuser(request):
 
 
 @csrf_exempt
+def android_addguest(request):
+    print(request.COOKIES)
+    response_data = {}
+    if(request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['eventid'])
+        tmpEvent = Event.objects.get(id=tmpId)
+
+        print('okej')
+        print(user.id)
+        print(request.session.session_key)
+        new_guest = Guest(name = request.GET['guestname'], surname = request.GET['guestsurname'],
+                    email = request.GET['guestemail'], phone = request.GET['guesttelephone'],
+                    event = tmpEvent)
+        new_guest.save()
+        #print(new_event)
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie dodano goscia'
+        response_data['name'] = new_guest.name
+        response_data['surname'] = new_guest.surname
+        response_data['email'] = new_guest.email
+        response_data['phone'] = new_guest.phone
+        response_data['event'] = new_guest.event.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+@csrf_exempt
 def android_getallevents(request):
     print(request.COOKIES)
     response_data = {}

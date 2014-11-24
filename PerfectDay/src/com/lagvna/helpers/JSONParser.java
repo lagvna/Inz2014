@@ -67,4 +67,18 @@ public class JSONParser {
 
 		return eventArray;
 	}
+
+	public ArrayList<String> getAddGuestTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("name"));
+		resultArray.add(jo.getString("surname"));
+		resultArray.add(jo.getString("email"));
+		resultArray.add(jo.getString("phone"));
+		resultArray.add(jo.getString("event"));
+
+		return resultArray;
+	}
 }

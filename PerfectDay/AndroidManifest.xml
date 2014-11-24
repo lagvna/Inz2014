@@ -61,6 +61,14 @@
             android:name=".UpdateEventActivity"
             android:label="@string/title_activity_update_event" >
         </activity>
+        <activity
+            android:name=".GuestsActivity"
+            android:label="@string/title_activity_guests" >
+        </activity>
+        <activity
+            android:name=".AddGuestActivity"
+            android:label="@string/title_activity_add_guest" >
+        </activity>
     </application>
 
 </manifest>

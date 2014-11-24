@@ -23,5 +23,7 @@
     <string name="title_activity_browse_adverts">BrowseAdvertsActivity</string>
     <string name="title_activity_select_event">SelectEventActivity</string>
     <string name="title_activity_update_event">UpdateEventActivity</string>
+    <string name="title_activity_guests">GuestsActivity</string>
+    <string name="title_activity_add_guest">AddGuestActivity</string>
 
 </resources>
