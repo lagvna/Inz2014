@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PerfectDay</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="app_id">839749212741967</string>
+    <string name="title_activity_event">EventActivity</string>
+    <string name="title_activity_company">CompanyActivity</string>
+
+    <color name="light_blue">#579AE6</color>
+    <color name="blue">#0000FF</color>
+    <color name="white">#ffffff</color>
+    <color name="light_gray">#777777</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#000000</color>
+    <color name="green">#55CC44</color>
+    <color name="yellow">#FFFF80</color>
+    <color name="darkGreen">#44A436</color>
+    <color name="very_light_gray">#C3C3C3</color>
+
+    <string name="title_activity_add_advert">AddAdvertActivity</string>
+    <string name="title_activity_browse_adverts">BrowseAdvertsActivity</string>
+    <string name="title_activity_select_event">SelectEventActivity</string>
+    <string name="title_activity_update_event">UpdateEventActivity</string>
+    <string name="title_activity_guests">GuestsActivity</string>
+    <string name="title_activity_add_guest">AddGuestActivity</string>
+
+</resources>

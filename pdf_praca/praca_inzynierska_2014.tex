@@ -1,0 +1,289 @@
+\documentclass[10pt,titlepage]{article}
+\usepackage{graphicx}
+%\usepackage{graphics}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{stmaryrd}
+\usepackage{url}
+%\usepackage{longtable}
+\usepackage[figuresright]{rotating}
+
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+\usepackage{pslatex}
+%\usepackage{ulem}
+
+\usepackage{listings}
+\usepackage{url}
+%\usepackage{Here}
+
+\usepackage{color}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\colorlet{xlightblue}{blue!5}
+
+\newtcolorbox{beamerlikethm}[1]{
+  title=#1,
+  beamer,
+  colback=xlightblue,
+  colframe=blue!30,
+  fonttitle=\bfseries,
+  left=1mm,
+  right=1mm,
+  top=1mm,
+  bottom=1mm,
+  middle=1mm
+}
+
+\definecolor{szary}{gray}{0.75}% jasnoszary
+
+%\setlength{\textwidth}{400pt}
+
+\lstset{numbers=left,
+			numberstyle=\tiny, 
+			basicstyle=\scriptsize\ttfamily, 
+			breaklines=true, 
+			captionpos=b, 
+			tabsize=2}
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\vfuzz2pt % Don't report over-full v-boxes if over-edge is small
+\hfuzz2pt % Don't report over-full h-boxes if over-edge is small
+
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\TAB}{\hspace{0.50cm}}
+\newcommand{\IFF}{\leftrightarrow}
+\newcommand{\IMP}{\rightarrow}
+
+\newcommand{\PRZYKLAD}[1]{\par \noindent{\color{blue}PRZYKŁAD:}\\ {\color{szary}#1}\par}
+
+\newtheorem{theorem}{Twierdzenie}[section]
+\newtheorem{lemma}{Lemat}[section]
+\newtheorem{example}{Przykład}[section]
+\newtheorem{corollary}{Wniosek}[section]
+\newtheorem{definition}{Definicja}[section]
+
+\hyphenation{wszy-stkich ko-lu-mnę każ-da od-leg-łość
+   dzie-dzi-ny dzie-dzi-na rów-nych rów-ny
+   pole-ga zmie-nna pa-ra-met-rów wzo-rem po-cho-dzi
+   o-trzy-ma wte-dy wa-run-ko-wych lo-gicz-nie
+   skreś-la-na skreś-la-ną cał-ko-wi-tych wzo-rów po-rzą-dek po-rząd-kiem
+   przy-kład pod-zbio-rów po-mię-dzy re-pre-zen-to-wa-ne
+   rów-no-waż-ne bi-blio-te-kach wy-pro-wa-dza ma-te-ria-łów
+   prze-ka-za-nym skoń-czo-nym mo-żesz na-tu-ral-na cią-gu tab-li-cy
+   prze-ka-za-nej}
+
+
+\begin{document}
+
+\pagestyle{empty} %To jest strona tytułowa, bez numeracji
+
+\begin{titlepage}
+\vspace*{\fill}
+\begin{center}
+\begin{picture}(300,510)
+  \put( 10,520){\makebox(0,0)[l]{\large \bf \textsc{Wydział Podstawowych Problemów Techniki}}}
+  \put( 10,500){\makebox(0,0)[l]{\large \bf \textsc{Politechniki Wrocławskiej}}}
+  \put( 10,315){\makebox(0,0)[l]{\Huge  \bf \textsc{Aplikacja do organizacji}}}
+  \put( 10,290){\makebox(0,0)[l]{\Huge  \bf \textsc{imprez okolicznościowych}}}
+  \put(100,240){\makebox(0,0)[l]{\large     \textsc{Jarosław Mirek}}}
+
+  \put(170, 80){\makebox(0,0)[l]{\large  {Praca inżynierska napisana}}}
+  \put(170, 60){\makebox(0,0)[l]{\large  {pod kierunkiem}}}
+  \put(170, 40){\makebox(0,0)[l]{\large  {dr. inż. Marcina Zawady}}}
+
+  \put(100,-80){\makebox(0,0)[bl]{\large \bf \textsc{Wrocław 2014}}}
+\end{picture}
+\end{center}
+\vspace*{\fill}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\pagestyle{headings}  %Zaczynamy właściwą część dokumentu
+
+\section*{Wstęp}      %* oznacza, że ta sekcja nie będzie numerowana   
+
+Analizując kwestię planowania działań jednostki można dojść do wniosku, że społeczeństwo bardzo sprawnie radzi sobie z planowaniem krótko- oraz długoterminowym.
+Nie jest dla nas problemem, aby określić co będziemy robić w nadchodzącym tygodniu lub, że w przeciągu pięciu lat skończymy studia i rozpoczniemy pierwszą pracę.
+Kłopoty pojawiają się jednak podczas planowania w średnim terminie, czyli np. miesiąc, rok.
+
+Okazuje się zatem, że w obliczu konieczności organizacji imprezy okolicznościowej (szczególnie formalnej) należy zadbać o wiele szczegółów, które razem mogą stanowić
+nie lada wyzwanie planistyczne. Dodatkowo dosyć często jest to wyzwanie, przed którym stajemy właśnie w średnim terminie. Stąd potrzebne jest staranne rozplanowanie 
+składowych wydarzenia, aby skutecznie je zorganizować w tym ograniczonym czasie.
+
+Wraz z duchem czasu kartka i długopis odchodzą do lamusa, a my chcemy mieć stały dostęp do ``organizera'' naszego wydarzenia. Dlatego też idealnym rozwiązaniem
+wydaje się być przeniesienie standardowego notesu do smartfona, w taki sposób, aby maksymalnie ułatwić kontrolę nad organizowanym wydarzeniem oraz usprawnić jego planowanie.
+Przegląd rynku aplikacji smartfonowych pokazuje, że systemy służące organizacji wydarzeń są nastawione na konkretny typ okoliczności np. wesele lub nieformalną imprezę.
+Istnieje jednak luka dla aplikacji, która:
+
+\begin{itemize}
+ \item posłuży do organizacji różnego typu wydarzeń,
+ \item pozwoli organizować zarówno wydarzenia o charakterze bardzo uroczystym, jak i te nieformalne,
+ \item zintegruje wszystkich, którzy są uczestnikami wydarzenia,
+ \item wyręczy organizatora w części obowiązków.
+\end{itemize}
+
+
+W związku z powyższym, celem zrealizowanej pracy dyplomowej było zaprojektowanie oraz implementacja rozproszonego systemu dedykowanemu systemowi operacyjnemu Android.
+System jest w stanie wspomóc organizację imprezy okolicznościowej na kilku płaszczyznach, a wymagania funkcjonalne były następujące:
+
+\begin{itemize}
+ \item wspieranie organizacji bardzo uroczystych wydarzeń, jak i tych nieformalnych,
+ \item skupienie wokół wydarzenia wszystkich jego uczestników,
+ \item możliwość deklaracji uczestników na prezenty lub rzeczy,
+ \item skoncentrowanie ważnych elementów imprezy (kontakty, notatki, listy rzeczy do zrobienia) w aplikacji.
+\end{itemize}
+
+Jako system o zbliżonej funkcjonalności można przytoczyć serwis Facebook, wraz z oferowaną przezeń funkcjonalnością wydarzeń.
+Facebook'owe wydarzenia mają jednak przede wszystkim funkcjonalność informacyjną oraz służą za miejsce do wymiany myśli przez zaproszonych użytkowników.
+Zrealizowany projekt rozszerza jednak znacznie ten pomysł, dodając możliwość jednoznacznej deklaracji uczestników, co do kwestii, którymi się zajmą.
+Ponadto system oferuje funkcjonalności stricte planistyczne, dzięki którym organizator w formie ``kreatora'', zostanie poprowadzony przez proces pozwalający 
+skutecznie zaplanować imprezę okolicznościową.
+
+Niniejsza praca składa się z czterech rozdziałów. W pierwszym rozdziale omawiamy dokładniej problem, oraz sposób interakcji użytkowników ze sobą, a także
+przypadki użycia aplikacji.
+
+Rozdział drugi zawiera szczegółowy projekt systemu. Opiszemy w nim poszczególne komponenty składające się na całość zaimplementowanej aplikacji. Przeanalizujemy
+aplikację kliencką, stronę serwera, a także bazę danych i komunikację pomiędzy tymi składowymi. Zawrzemy w nim również opis algorytmu generowania unikalnego i losowego
+kodu, który jest kluczem dostępu gości do wydarzenia.
+
+Rozdział trzeci uszczegółowi użyte technologie oraz pewne kwestie implementacyjne, którymi cechuje się napisany system.
+
+Czwarty rozdział dotyczyć będzie tematu wdrożenia systemu, natomiast rozdział końcowy podsumuje otrzymane wyniki, związane z nimi możliwe kierunki rozwoju,
+a także wypunktuje powodzenie implementacyjne systemu.
+
+\newpage
+\section{Analiza problemu}
+W tym rozdziale zajmiemy się przede wszystkim tym, co charakteryzuje problem wykonania rozproszonej aplikacji mobilnej dla tematu naszej pracy. Zawrzemy w nim
+ponadto sposób podziału ról pomiędzy użytkownikami oraz zmianą struktury aplikacji w zależności od typu organizowanego wydarzenia.
+
+Dla ustalenia uwagi rozdział ten rozpoczniemy od zagadnienia, z którego wyrósł pomysł stworzenia opisywanego w pracy systemu:
+
+\begin{beamerlikethm}{}
+Zwyczajowo para, która planuje zawrzeć związek małżeński organizuje przyjęcie weselne. Jednym z nierozerwalnych elementów takiego wydarzenia są prezenty.
+Niekiedy młoda para tworzy listę prezentów, które chciałaby otrzymać od gości, a listę taką najczęściej dzierży świadek i to on nadzoruje całe przedsięwzięcie
+oraz deklaracje gości dotyczące kupna danego przedmiotu. Nie jest to jednak zbyt wygodna forma, ponieważ goście nie zawsze mają możliwość dokładnego przeanalizowania
+listy, a nadzorca listy musi poświęcić swój czas dużej ilości gości. Ponadto mogą pojawić się niedogodności komunikacyjne, które zaowocują duplikatem prezentu. Wady można
+jeszcze mnożyć. Dlaczego więc nie pomyśleć o liście prezentów w interaktywnej, cyfrowej formie? Wystarczy dodatkowa karteczka dołączona do zaproszenia, wraz z kodem
+oraz instrukcją dotyczącą jego użycia.
+\end{beamerlikethm}
+
+Przyjęcie weselne to jednak nie tylko prezenty, ale także mnóstwo obowiązków organizacyjnych, setki telefonów i formalności. Jeśli jednak głębiej się zastanowimy
+te same problemy dotyczą organizacji bankietu, urodzin czy nawet nieformalnej uroczystości, które jest współorganizowane przez wszystkich uczestników.
+
+Stąd też jeśli nasza aplikacja ma tym problemom zaradzić, to musimy rozważyć kilka istotnych zagadnień:
+
+\begin{enumerate}
+ \item Użytkownicy i ich role:
+ \\ Przede wszystkim musimy podzielić użytkowników na organizatorów i uczestników.
+ Organizator to użytkownik, który decyduje czy wydarzenie ma charakter oficjalny, czy też nie, ustala listę gości, definiuje listę prezentów (lub, w przypadku
+ nieformalnej, współorganizowanej imprezy, przedmioty/dania/napoje, które sa potrzebne), a także powinien móc zdefiniować listę spraw, które należy dopełnić czy też
+ posiadać prosty skorowidz, umożliwiający kontakt z firmami zajmującymi się salą, cateringiem czy orkiestrą. Powinien on także posiadać funkcjonalności uczestnika.
+ 
+ Uczestnik jest natomiast użytkownikiem, który może wskutek zalogowania kodem wydarzenia przejrzeć jego szczegóły, tj. gdzie i kiedy się odbędzie czy też listę gości.
+ Dodatkowo uczestnik może w formie systemu komentarzy toczyć dyskusję dotyczącą wydarzenia, a także zadeklarować chęć zakupu prezentu z listy.
+ 
+ \item Tajność wydarzenia
+ \\ Wydarzenie powinno być przedmiotem zainteresowania uczestniczących w nim gości. Wszelkie szczegóły nie powinny być dostępne każdemu użytkownikowi aplikacji, a jedynie
+ osobom, które organizator mianował uczestnikami. Rozwiązaniem, które zostało wymyślone na potrzeby aplikacji jest losowy, unikalny kod, który pozwoli zalogować się do
+ wydarzenia. Organizator, tworząc uroczystość w systemie otrzyma stosowny ciąg alfanumeryczny, które może później przekazać zainteresowanym.
+ 
+ 
+ \item Weryfikacja użytkowników
+ \\ System kodu logującego tworzy możliwość, że użytkownik wpisując losowo ciąg cyfr i znaków alfabetu zaloguje się do jakiegoś wydarzenia, którego uczestnikiem być nie powinien.
+ Stąd też należy zadbać o weryfikację użytkowników. Z pomocą przychodzi konto w portalu Facebook. W tej chwili bardzo dużo osób posiada takie konto, dzięki czemu można bardzo łatwo
+ zweryfikować kim jest zalogowany w aplikacji użytkownik.
+ Oprócz tego uniemożliwia to wtargnięcie w kompetencje organizatora.
+ 
+ \item Stworzenie części serwerowej
+ \\ System, który w założeniach ma integrować użytkowników o różnych rolach musi posiadać zdalny komponent, który będzie przechowywał wpisywane do systemu informacje
+ oraz odpowiednio je propagował pomiędzy nimi. Serwer powinien zatem być zintegrowany z bazą danych oraz umożliwiać prostą komunikację ze smartfonem.
+\end{enumerate}
+
+
+Ważnym elementem systemu z podziałem ról jest również taki projekt aplikacji, który pozwoli na dynamiczną zmianę funkcjonalności w zależności od typu użytkownika. Uczestnik
+nie powinien być w stanie dodawać prezentów do listy, a od organizatora nie oczekuje się możliwości deklaracji na prezent, który sam ma otrzymać. Stąd też w naszym systemie
+należało stworzyć aplikację, która połączy widoki dla obu ról, oraz serwer, który odpowiednio roześle dane.
+
+Przechodząc do analizy komunikacji pomiędzy aplikacją mobilną, a serwerem należało zastanowić się w jaki sposób przesyłać dane. Dodatkowo należało zaprojektować integrację
+serwera z bazą danych tak, aby te trzy komponenty niezawodnie współpracowały, reagowały na nietypowe zdarzenia i były bezpieczne.
+
+Ostatecznym elementem, który w decydujący sposób wpłynąłby na sukces komercyjny systemu jest interfejs użytkownika aplikacji klienckiej. Funkcjonalna aplikacja wymaga, aby
+jego interfejs nie wymagał przedzierania się przez gąszcz ekranów, a jego składowe powinny mieć intuicyjny charakter, ew. wsparty elementem pomocy, jaką można uzyskać w odpowiednim
+miejscu.
+
+\newpage
+\section{Projekt systemu}
+W tej części pracy zajmiemy się szczegółowym opisem komponentów odpowiadających za całość systemu. Opiszemy w jaki sposób komponenty te współpracują ze sobą, a także 
+poruszymy kwestie związane z komunikacją i algorytmami wymaganymi do sprawnego funkcjonowania systemu.
+
+\subsection{Założenia}
+W założeniach system składa się z czterech komponentów: strony internetowej, aplikacji mobilnej oraz serwera zintegrowanego z bazą danych.
+
+\begin{itemize} % to trzeba bedzie przejrzec w zaleznosci od tego jak potoczy sie ze strona
+ \item Strona internetowa powinna oferować możliwość integracji posiadanego przez użytkownika konta Facebook z aplikacją kliencką.
+ Po zintegrowaniu konta można rozpocząć użytkowanie aplikacji mobilnej. Powinna także zawierać te same funkcjonalności co aplikacja mobilna.
+ \item Aplikacja mobilna to element, który pozwoli na pobieranie i przesyłanie danych użytkowników do serwera. Pozwoli również edytować, przetwarzać i umieszczać
+dane na ekranie urządzenia. 
+ \item Serwer to serce aplikacji. Najważniejszy element systemu, który powinien identyfikować użytkowników, dbać o prawidłową propagację danych, jak również
+ sprawnie współpracować ze zintegrowaną bazą danych.
+ \item Baza danych, to komponent, w którym przechowywane są wszystkie informacje użytkowników. Ponadto zawiera ona informacje związane z systemem logowania użytkowników do systemu.
+\end{itemize}
+
+\subsection{Architektura systemu}
+System jest oparty o tzw. model ``klient-serwer''. Oznacza to, że istnieje centralne miejsce w systemie (serwer), które operuje na wszystkich danych, przetwarza je, zapamiętuje, a także w odpowiednim
+formacie rozsyła do klientów. W takim modelu element klienta służy przede wszystkim do pobierania i wyświetlania danych, a także do ich wprowadzania do systemu.
+
+napisze tu jeszcze o integracji z baza danych, oraz komunikacja, a takze ze serwer obsluguje i strone i androida. moze cos jeszcze
+
+\subsection{Aplikacja mobilna}
+
+\subsection{Aplikacja internetowa}
+
+\subsection{Projekt serwera}
+
+\subsection{Projekt bazy danych}
+
+\subsection{Opis komunikacji}
+
+\subsection{Opis algorytmów}
+
+
+\section{Implementacja sytemu}
+
+\subsection{Opis technologii}
+\subsubsection{Aplikacja mobilna}
+\subsubsection{Aplikacja internetowa}
+\subsubsection{Serwer aplikacji}
+\subsection{Szczegóły implementacyjne}
+
+\section{Instalacja i wdrożenie systemu}
+
+\section{Dodatek A - Opis płyty}
+
+\section*{Podsumowanie}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BIBLIOGRAFIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{plain}
+%\marginpar{Znajdź w internecie porządnie zredagowane cytowania}
+\bibliography{P2P}
+
+\end{document}
