@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^getallevents/', views.android_getallevents, name = 'getallevents'),
     url(r'^addguest/', views.android_addguest, name = 'addguest'),
     url(r'^remove/', views.android_remove, name = 'remove'),
+    url(r'^getallguests/', views.android_getallguests, name = 'getallguests'),
 )

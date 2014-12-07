@@ -37,7 +37,7 @@ public class EventActivity extends FragmentActivity implements
 		actionBar.setDisplayUseLogoEnabled(false);
 
 		getExtras();
-		//System.out.println(name);
+		// System.out.println(name);
 
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
@@ -70,10 +70,15 @@ public class EventActivity extends FragmentActivity implements
 	private void getExtras() {
 		Bundle extras = getIntent().getExtras();
 		name = extras.getString("name");
+		name.replace("_", " ");
 		place = extras.getString("place");
+		place.replace("_", " ");
 		date = extras.getString("date");
+		date.replace("_", " ");
 		code = extras.getString("code");
+		code.replace("_", " ");
 		description = extras.getString("description");
+		description.replace("_", " ");
 	}
 
 	@Override

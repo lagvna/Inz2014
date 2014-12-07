@@ -40,9 +40,15 @@ def android_remove(request):
             print('event')
             tmpId = int(request.GET['id'])
             Event.objects.filter(id=tmpId).delete()
+            response_data['message'] = 'Pomyslnie usunieto wydarzenie'
+        if (request.GET['type'] == 'guest'):
+            print('guest')
+            tmpId = int(request.GET['id'])
+            Guest.objects.filter(id=tmpId).delete()
+            response_data['message'] = 'Pomyslnie usunieto goscia'
 
         response_data['result'] = 'success'
-        response_data['message'] = 'Pomyslnie usunieto wydarzenie'
+
 
         return HttpResponse(json.dumps(response_data), content_type='application/json')
     else:
@@ -74,12 +80,49 @@ def android_addguest(request):
         response_data['email'] = new_guest.email
         response_data['phone'] = new_guest.phone
         response_data['event'] = new_guest.event.id
+        response_data['id'] = new_guest.id
 
         return HttpResponse(json.dumps(response_data), content_type='application/json')
     else:
         response_data['result'] = 'failure'
         return HttpResponse(json.dumps(response_data), content_type='application/json')
 
+
+@csrf_exempt
+def android_getallguests(request):
+    print(request.COOKIES)
+    response_data = {}
+    response_guests = []
+    if (request.user.is_authenticated()):
+        tmpEvent = Event.objects.filter(id = request.GET['eventid'])
+        tmpGuest = Guest.objects.filter(event = tmpEvent)
+        for gu in tmpGuest:
+            guestName = gu.name
+            print(guestName)
+            guestSurname = gu.surname
+            print(guestSurname)
+            guestEmail = gu.email
+            print(guestEmail)
+            guestTelephone = gu.phone
+            print(guestTelephone)
+            guestId = gu.id
+            record = {'name': guestName, 'surname': guestSurname, 'email': guestEmail, 'telephone': guestTelephone, 'id': guestId}
+            print record
+            response_guests.append(record)
+
+        response_data['guests'] = response_guests
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie pobrano wszystkich gosci'
+
+        print('okej')
+        user = request.user
+        print(user.id)
+        print(request.session.session_key)
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        print('zle')
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
 
 @csrf_exempt
 def android_getallevents(request):

@@ -2,6 +2,7 @@ package com.lagvna.perfectday;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,25 +47,45 @@ public class AddGuestActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				nameTxt = name.getText().toString();
-				surnameTxt = surname.getText().toString();
-				emailTxt = email.getText().toString();
-				telephoneTxt = telephone.getText().toString();
+				if (!name.getText().toString().equals("")) {
+					nameTxt = name.getText().toString();
+				} else {
+					nameTxt = "brak";
+				}
+				if (!surname.getText().toString().equals("")) {
+					surnameTxt = surname.getText().toString();
+				} else {
+					surnameTxt = "brak";
+				}
+				if (!email.getText().toString().equals("")) {
+					emailTxt = email.getText().toString();
+				} else {
+					emailTxt = "brak";
+				}
+				if (!telephone.getText().toString().equals("")) {
+					telephoneTxt = telephone.getText().toString();
+				} else {
+					telephoneTxt = "brak";
+				}
 				eventId = DataHelper.getInstance().getEventId();
 
 				processInput();
-				addGuest();
+				if (!nameTxt.equals("brak") && !surnameTxt.equals("brak")) {
+					addGuest();
+				} else {
+					raiseError("Musisz podać przynajmniej imię i nazwisko gościa!");
+				}
 				cleanEditTexts();
 			}
 		});
 	}
 
 	private void processInput() {
-		emailTxt.replace("@", ".at.");
-		nameTxt.replace(" ", "");
-		surnameTxt.replace(" ", "");
-		emailTxt.replace(" ", "");
-		telephoneTxt.replace(" ", "");
+		emailTxt = emailTxt.replace("@", ".at.");
+		nameTxt = nameTxt.replace(" ", "");
+		surnameTxt = surnameTxt.replace(" ", "");
+		emailTxt = emailTxt.replace(" ", "");
+		telephoneTxt = telephoneTxt.replace(" ", "");
 	}
 
 	private void addGuest() {
@@ -89,9 +110,27 @@ public class AddGuestActivity extends Activity {
 		progressDialog.hide();
 	}
 
+	public void raiseError(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+	}
+
+	public void setGuestDetails(String name, String surname, String email,
+			String telephone, String id) {
+		Intent returnIntent = new Intent();
+		returnIntent.putExtra("name", name);
+		returnIntent.putExtra("surname", surname);
+		returnIntent.putExtra("email", email);
+		returnIntent.putExtra("telephone", telephone);
+		returnIntent.putExtra("id", id);
+		setResult(Activity.RESULT_OK, returnIntent);
+		System.out.println("JESTEM TUTAJ!");
+	}
+
 	public void setNewGuest(String name, String surname, String email,
 			String phone, String eventid) {
-		Toast.makeText(this, name + " " + surname + " " + email + " "
-				+ telephone + " " + eventid, Toast.LENGTH_LONG);
+		Toast.makeText(
+				this,
+				name + " " + surname + " " + email + " " + telephone + " "
+						+ eventid, Toast.LENGTH_LONG).show();
 	}
 }

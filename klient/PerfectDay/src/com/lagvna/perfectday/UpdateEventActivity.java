@@ -72,6 +72,8 @@ public class UpdateEventActivity extends FragmentActivity {
 		eventPlace = placeTxt.getText().toString();
 		eventDescription = descriptionTxt.getText().toString();
 
+		processInput();
+		
 		if (eventName.equals("") || eventDate.equals("")
 				|| eventPlace.equals("") || eventDescription.equals("")) {
 			Toast.makeText(this, "Wprowadź wszystkie dane!", Toast.LENGTH_LONG)
@@ -86,6 +88,13 @@ public class UpdateEventActivity extends FragmentActivity {
 
 			}
 		}
+	}
+	
+	private void processInput()	{
+		eventName.replace(" ", "_");
+		eventDate.replace(" ", "_");
+		eventPlace.replace(" ", "_");
+		eventDescription.replace(" ", "_");
 	}
 
 	public void setEventDetails(String name, String place, String date,

@@ -15,24 +15,22 @@ import org.json.JSONException;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.lagvna.customtypes.Guest;
 import com.lagvna.helpers.DataHelper;
 import com.lagvna.helpers.JSONParser;
-import com.lagvna.perfectday.AddGuestActivity;
+import com.lagvna.perfectday.GuestsActivity;
 
-public class AddGuestTask extends AsyncTask<Void, Void, Void> {
-	private AddGuestActivity callingActivity;
+public class GetAllGuestsTask extends AsyncTask<Void, Void, Void> {
+	private GuestsActivity callingActivity;
 	private String url;
 	private ArrayList<String> result;
 	private String message;
+	private ArrayList<Guest> guestArr;
 
-	public AddGuestTask(AddGuestActivity callingActivity, String guestName,
-			String guestSurname, String guestEmail, String guestTelephone,
-			String eventId) {
+	public GetAllGuestsTask(GuestsActivity callingActivity, String eventId) {
 		this.callingActivity = callingActivity;
-		url = DataHelper.getInstance().getServerUrl() + "addguest?guestname="
-				+ guestName + "&guestsurname=" + guestSurname + "&guestemail="
-				+ guestEmail + "&guesttelephone=" + guestTelephone
-				+ "&eventid=" + eventId;
+		url = DataHelper.getInstance().getServerUrl() + "getallguests?eventid="
+				+ eventId;
 	}
 
 	@Override
@@ -57,10 +55,12 @@ public class AddGuestTask extends AsyncTask<Void, Void, Void> {
 			String res = EntityUtils.toString(entity);
 			System.out.println(res);
 			JSONParser jp = new JSONParser(res);
-			result = jp.getAddGuestTaskResult();
+			result = jp.getGetAllGuestsTaskResult();
 			if (entity != null) {
 				if (result.get(0).equals("success")) {
 					message = result.get(1);
+					String guests = result.get(2);
+					guestArr = jp.getGuests(guests);
 				} else {
 					message = "Coś poszło nie tak";
 				}
@@ -81,14 +81,12 @@ public class AddGuestTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void arg) {
 		callingActivity.hideProgressDial();
-		callingActivity.setGuestDetails(result.get(2), result.get(3),
-				result.get(4), result.get(5), result.get(6));
+		callingActivity.createList(guestArr);
 		callingActivity.runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(callingActivity, message, Toast.LENGTH_SHORT)
 						.show();
 			}
 		});
-		callingActivity.finish();
 	}
 }

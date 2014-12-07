@@ -29,7 +29,7 @@ import com.lagvna.customtypes.Event;
 import com.lagvna.helpers.DataHelper;
 import com.lagvna.lists.CustomRow;
 import com.lagvna.tasks.GetAllEventsTask;
-import com.lagvna.tasks.RemoveSthTask;
+import com.lagvna.tasks.RemoveEventTask;
 
 public class SelectEventActivity extends ListActivity {
 	private Button addEvent;
@@ -129,7 +129,9 @@ public class SelectEventActivity extends ListActivity {
 		CustomRow_data.clear();
 		for (int i = 0; i < eventArr.size(); i++) {
 			String date = eventArr.get(i).getDate();
+			date.replace("_", " ");
 			String title = eventArr.get(i).getName();
+			title.replace("_", " ");
 			CustomRow_data.add(new CustomRow(R.drawable.lvsel, title, date));
 		}
 	}
@@ -177,12 +179,11 @@ public class SelectEventActivity extends ListActivity {
 		for (int i = 0; i < eventArr.size(); i++) {
 			if (eventArr.get(i).getName().equals(d)) {
 				int position = i;
-				new RemoveSthTask(this, "event", eventArr.get(i).getEventId(),
-						position).execute();
+				new RemoveEventTask(this, "event",
+						eventArr.get(i).getEventId(), position).execute();
 				break;
 			}
 		}
-
 	}
 
 	public void postDelete(int position) {

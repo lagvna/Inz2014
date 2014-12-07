@@ -7,11 +7,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.lagvna.customtypes.Event;
+import com.lagvna.customtypes.Guest;
 
 public class JSONParser {
 	private String inputStream;
 	private ArrayList<String> resultArray = new ArrayList<String>();
 	private ArrayList<Event> eventArray = new ArrayList<Event>();
+	private ArrayList<Guest> guestArray = new ArrayList<Guest>();
 
 	public JSONParser(String inputStream) {
 
@@ -24,6 +26,8 @@ public class JSONParser {
 		resultArray.add(jo.getString("result"));
 		resultArray.add(jo.getString("message"));
 		resultArray.add(jo.getString("login"));
+
+		System.out.println(resultArray.get(0));
 
 		return resultArray;
 	}
@@ -68,6 +72,33 @@ public class JSONParser {
 		return eventArray;
 	}
 
+	public ArrayList<String> getGetAllGuestsTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.get("guests").toString());
+
+		return resultArray;
+	}
+
+	public ArrayList<Guest> getGuests(String guests) throws JSONException {
+		JSONArray ja = new JSONArray(guests);
+		// JSONObject jo = new JSONObject();
+
+		for (int i = 0; i < ja.length(); i++) {
+			JSONObject jo = new JSONObject();
+			jo = ja.getJSONObject(i);
+			guestArray
+					.add(new Guest(jo.getString("name"), jo
+							.getString("surname"), jo.getString("email")
+							.replace(".at.", "@"), jo.getString("telephone"),
+							jo.getString("id")));
+		}
+
+		return guestArray;
+	}
+
 	public ArrayList<String> getAddGuestTaskResult() throws JSONException {
 		JSONObject jo = new JSONObject(inputStream);
 
@@ -78,6 +109,7 @@ public class JSONParser {
 		resultArray.add(jo.getString("email"));
 		resultArray.add(jo.getString("phone"));
 		resultArray.add(jo.getString("event"));
+		resultArray.add(jo.getString("id"));
 
 		return resultArray;
 	}

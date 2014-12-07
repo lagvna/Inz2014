@@ -17,26 +17,26 @@ import android.widget.Toast;
 
 import com.lagvna.helpers.DataHelper;
 import com.lagvna.helpers.JSONParser;
-import com.lagvna.perfectday.AddGuestActivity;
+import com.lagvna.perfectday.GuestsActivity;
 
-public class AddGuestTask extends AsyncTask<Void, Void, Void> {
-	private AddGuestActivity callingActivity;
+public class RemoveGuestTask extends AsyncTask<Void, Void, Void> {
+	private GuestsActivity callingActivity;
 	private String url;
 	private ArrayList<String> result;
 	private String message;
+	private int position;
 
-	public AddGuestTask(AddGuestActivity callingActivity, String guestName,
-			String guestSurname, String guestEmail, String guestTelephone,
-			String eventId) {
+	public RemoveGuestTask(GuestsActivity callingActivity, String type,
+			String id, int position) {
+		this.position = position;
 		this.callingActivity = callingActivity;
-		url = DataHelper.getInstance().getServerUrl() + "addguest?guestname="
-				+ guestName + "&guestsurname=" + guestSurname + "&guestemail="
-				+ guestEmail + "&guesttelephone=" + guestTelephone
-				+ "&eventid=" + eventId;
+		url = DataHelper.getInstance().getServerUrl() + "remove?type=" + type
+				+ "&id=" + id;
 	}
 
 	@Override
 	protected void onPreExecute() {
+		System.out.println("REMOVEGUEST");
 		callingActivity.showProgressDial();
 		super.onPreExecute();
 	}
@@ -57,7 +57,7 @@ public class AddGuestTask extends AsyncTask<Void, Void, Void> {
 			String res = EntityUtils.toString(entity);
 			System.out.println(res);
 			JSONParser jp = new JSONParser(res);
-			result = jp.getAddGuestTaskResult();
+			result = jp.getRemoveSthTaskResult();
 			if (entity != null) {
 				if (result.get(0).equals("success")) {
 					message = result.get(1);
@@ -81,14 +81,14 @@ public class AddGuestTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void arg) {
 		callingActivity.hideProgressDial();
-		callingActivity.setGuestDetails(result.get(2), result.get(3),
-				result.get(4), result.get(5), result.get(6));
+		if (result.get(0).equals("success")) {
+			callingActivity.postDelete(position);
+		}
 		callingActivity.runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(callingActivity, message, Toast.LENGTH_SHORT)
 						.show();
 			}
 		});
-		callingActivity.finish();
 	}
 }
