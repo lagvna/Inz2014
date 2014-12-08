@@ -11,6 +11,7 @@
 %\usepackage{longtable}
 \usepackage[figuresright]{rotating}
 
+\usepackage[toc,page]{appendix}
 \usepackage{polski}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -22,7 +23,14 @@
 \usepackage{listings}
 \usepackage{url}
 %\usepackage{Here}
-
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 \usepackage{color}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
@@ -139,7 +147,7 @@ Istnieje jednak luka dla aplikacji, która:
 \end{itemize}
 
 
-W związku z powyższym, celem zrealizowanej pracy dyplomowej było zaprojektowanie oraz implementacja rozproszonego systemu dedykowanemu systemowi operacyjnemu Android.
+W związku z powyższym, celem zrealizowanej pracy dyplomowej było zaprojektowanie oraz implementacja systemu w modelu klient-serwer dedykowanemu systemowi operacyjnemu Android.
 System jest w stanie wspomóc organizację imprezy okolicznościowej na kilku płaszczyznach, a wymagania funkcjonalne były następujące:
 
 \begin{itemize}
@@ -169,7 +177,7 @@ a także wypunktuje powodzenie implementacyjne systemu.
 
 \newpage
 \section{Analiza problemu}
-W tym rozdziale zajmiemy się przede wszystkim tym, co charakteryzuje problem wykonania rozproszonej aplikacji mobilnej dla tematu naszej pracy. Zawrzemy w nim
+W tym rozdziale zajmiemy się przede wszystkim tym, co charakteryzuje problem wykonania aplikacji mobilnej w modelu klient-serwer dla tematu naszej pracy. Zawrzemy w nim
 ponadto sposób podziału ról pomiędzy użytkownikami oraz zmianą struktury aplikacji w zależności od typu organizowanego wydarzenia.
 
 Dla ustalenia uwagi rozdział ten rozpoczniemy od zagadnienia, z którego wyrósł pomysł stworzenia opisywanego w pracy systemu:
@@ -247,23 +255,180 @@ dane na ekranie urządzenia.
 
 \subsection{Architektura systemu}
 System jest oparty o tzw. model ``klient-serwer''. Oznacza to, że istnieje centralne miejsce w systemie (serwer), które operuje na wszystkich danych, przetwarza je, zapamiętuje, a także w odpowiednim
-formacie rozsyła do klientów. W takim modelu element klienta służy przede wszystkim do pobierania i wyświetlania danych, a także do ich wprowadzania do systemu.
+formacie rozsyła do klientów. W takim modelu element klienta służy przede wszystkim do komponowania zapytań do serwera i wyświetlania zwracanych danych.
 
-napisze tu jeszcze o integracji z baza danych, oraz komunikacja, a takze ze serwer obsluguje i strone i androida. moze cos jeszcze
+W naszym projekcie za komponent kliencki rozumiemy aplikację mobilną oraz stronę internetową. Są to elementy o zbliżonej funkcjonalności. Serwer ma natomiast obsługiwać zapytania dla obu tych technologii.
+Ponadto serwer ma działać zdalnie ze z góry określonymi funkcjonalnościami, jakie oferuje system.
+Nasz projekt jest generalnie oparty o tworzenie wydarzeń, które skupiają konkretne grupy użytkowników. Wobec tego chcemy, aby serwer był wspólny dla różnych wydarzeń i aby jego utrzymanie i administracja
+leżała w gestii usługodawcy systemu.
+Jak już wspomnieliśmy wcześniej baza danych zawiera wszystkie informacje z systemu, toteż zakłada się, że będzie ona silnie zintegrowana z serwerem. Chcemy, aby użytkownik, który ma styczność
+z aplikacją kliencką mógł jej skutecznie używać bez potrzeby znajomości architektury systemu, czy też sposobu komunikacji.
+
+%napisze tu jeszcze o integracji z baza danych, oraz komunikacja, a takze ze serwer obsluguje i strone i androida. moze cos jeszcze
 
 \subsection{Aplikacja mobilna}
+W tej, jak i kilku kolejnych części dokumentu opiszemy to, jak na etapie projektu powinny wyglądać funkcjonalności poszczególnych elementów systemu. Rozpoczniemy od aplikacji mobilnej.
+
+Jak już wspomnieliśmy wcześniej aplikacja mobilna dedykowana jest systemowi operacyjnemu Android. Stąd też kluczowym słowem będzie tzw. Aktywność (Activity). Szerzej o technicznych aspektach
+systemu Android wspomnimy w rozdziale dedykowanym opisom technologii. Na tym etapie o Aktywności należy myśleć jako o pojedynczym widoku w aplikacji smartfonowej, który posiada pewne funkcjonalności
+pozwalające użytkownikowi na interakcje z aplikacją.
+
+Jednym z kluczowych celów opisywanego systemu było to, żeby aplikacja mobilna miała przyjazny interfejs użytkownika. Stąd też projektując systemu chcielibyśmy, aby miał on ``płytki'' charakter.
+Mamy tu na myśli, że nie trzeba przejść wielu Aktywności, aby dojść do najbardziej zagnieżdżonej funkcjonalności aplikacji.
+
+\begin{figure}
+\begin{center}
+ \includegraphics[scale=0.5]{/home/lagvna/Dokumenty/inz_gfx/funk.png}
+ \caption{Diagram przedstawiający poziomy funkcjonalności w aplikacji mobilnej}
+ \label{fig:funk}
+\end{center}
+\end{figure}
+
+Można to przeanalizować bardziej szczegółowo, spoglądając na Rysunek~\ref{fig:funk}. Aplikacja ma sześć poziomów zagnieżdżenia. Oznacza to, że należy dokonać co najwyżej 5 dotknięć ekranu 
+(włącznie z uruchomieniem) i co najwyżej trzech przesunięć palcem po ekranie, aby dojść do dowolnej funkcjonalności. Poziom nr 3 oznaczyliśmy gwiazdką, ponieważ zależy ona od aktora.
+W przypadku gdy użytkownik jest organizatorem, to być może organizuje kilka wydarzeń jednocześnie, stąd należało przewidzieć wybór, administracji którego chce się aktualnie podjąć.
+Dla gościa poziom ten nie jest wymagany, ponieważ wydarzenia są jednoznacznie identyfikowane kodem dostępu. Wobec czego podając otrzymany od organizatora ciąg alfanumeryczny system
+sam dołączy gościa do odpowiedniego wydarzenia.
+Dodatkowo czynności, które polegają na dodawaniu informacji do systemu, nie będą udostępniane gościom. Jedynym wyjątkiem jest tutaj możliwość deklaracji zakupu prezentu lub przedmiotu
+na nadchodzące wydarzenie. Względnie toczenie dyskusji na ekranie z systemem temu poświęconym.
+
+Wszystko to czyni, że aplikacja ma prosty interfejs, który skupia się wokół poziomu nr 4. 
+W tym miejscu mamy bowiem cztery najważniejsze funkcje w aplikacji, współistniejące obok siebie, dzięki możliwościom jakie niesie system Android. Oferuje on rozwiązanie w postaci
+tzw. zakładek, czyli jednej aktywności, która łączy w sobie kilka widoków (tzw. fragmentów), przy czym nawigacja polega na przesuwaniu palcem po ekranie odpowiednio w lewą lub prawą stronę. 
+To właśnie ten pomysł jest sednem w kwestii projektu ``płytkiej'' nawigacji po aplikacji.
+
+Będąc przy Rysunku~\ref{fig:funk} możemy od razu przeanalizować aplikację pod kątem projektowanych funkcjonalności:
+
+\begin{itemize}
+ \item Poziom 1.
+      \begin{itemize}
+        \item Ekran powitalny.
+        \\Jest to ekran, który widzimy tuż po uruchomieniu aplikacji. To widok, który przedstawia logo i nazwę aplikacji, pozostaje na ekranie przez kilka sekund, po czym samoczynnie
+        znika na rzecz kolejnego poziomu w aplikacji.
+       \end{itemize}
+ \item Poziom 2.
+       \begin{itemize}
+        \item Ekran logowania.
+        \\ W tym miejscu użytkownik ma szansę rozpocząć interakcję z oprogramowaniem. W tej aktywności użytkownik może zalogować się do aplikacji swoim kontem Facebook.
+        Po uwierzytelnieniu odblokowane zostaną przyciski pozwalające na dokonanie wyboru czy użytkownik chce utworzyć swoje wydarzenie, czy też planuje zalogować się
+        do już istniejącego, którego kod dostępu posiada.
+       \end{itemize}
+ \item Poziom 3*.
+      \begin{itemize}
+       \item Wybór wydarzenia.
+       \\ Jak już opisaliśmy wcześniej jest to wyłącznie funkcjonalność organizatora, który może administrować więcej niż jedno wydarzenie jednocześnie. Z tego względu powinien móc
+       zdecydować, którym zająć się w danym momencie. W przypadku, gdy organizator chce utworzyć nowe wydarzenie, ma szansę również zrobić to z tego poziomu aplikacji, podając kilka podstawowych
+       informacji, takich jak: nazwa, miejsce, data czy krótki opis.
+      \end{itemize}
+ \item Poziom 4.
+      \begin{itemize}
+       \item Ekran podsumowania organizacji wydarzenia.
+       \\Jest to element aplikacji, który zawiera podstawowe informacje o wydarzeniu: nazwa, data, miejsce, krótki opis. Dodatkowo pozwala przejść do niższych poziomów interfejsu,
+       związanych z listą gości oraz skorowidzem organizatora.
+       \item Ekran z notatkami użytkownika.
+       \\Organizacja wydarzenia (szczególnie oficjalnej) wymaga zadbania o wiele szczegółów. Aplikacja zaoferuje więc funkcjonalność notatek, wraz z tzw. elementem
+       zatwierdzania już wykonanych zadań. Ma to być swoisty notes, do którego dostęp ma jedynie organizator.
+       \item Ekran z systemem dyskusyjnym.
+       \\W tym miejscu mamy komponent pozwalający na wymianę myśli uczestników wydarzenia. W założeniach ma to być uproszczone forum, przypominające Facebook'owy system komentarzy.
+       \item Ekran z funkcjonalnością zapisów na prezenty/przedmioty.
+       \\W przypadku oficjalnych imprez takich jak wesele, organizator może życzyć sobie ustalenia listy prezentów, które chciałby otrzymać od uczestników. Wobec tego w tym miejscu
+       może on obserwować jak przebiegają zapisy gości na zadeklarowane przez niego przedmioty.
+       W ramach imprezy nieformalnej często jest ona współorganizowana przez gości. Wymaga to wielu przygotowań i obowiązków, które dobrze byłoby rozdzielić pomiędzy nich. 
+       Dlatego też jest to idealne miejsce dla tego typu wymagań.
+       Warto również podkreślić, że funkcjonalność dodawania pozycji dla powyższej funkcjonalności, leży w uprawnieniach organizatora i została przewidziana dla poziomu 5.
+      \end{itemize}
+ \item Poziom 5.
+      \begin{itemize}
+	\item Zarządzanie listą gości.
+	\\W tym miejscu można przejrzeć listę gości, którą organizator przewidział w ramach wydarzenia. Funkcjonalność ta pozwoli w łatwy sposób skontaktować się z danym gościem (e-mail, numer telefonu).
+	\item Zarządzanie skorowidzem.
+	\\Przy organizacji wydarzenia często zaangażowane są w to zewnętrzne firmy, zajmujące się specjalistyczną branżą. Ta funkcjonalność pozwoli na szybki kontakt.
+	\item Dodawanie nowej notatki.
+	\\Notatki to funkcjonalność przewidziana wyłącznie dla organizatora. Powinien on móc dodawać nowe notatki, wraz z kolejnymi etapami organizacji. Aby ułatwić nieco wprowadzanie danych
+	funkcjonalność ta znajduje się w kolejnym poziomie i posiadać będzie swoją aktywność.
+	\item Dodawanie nowego prezentu/przedmiotu.
+	\\Prezenty wymagają podania szczegółów dotyczących zakupu - link do sklepu internetowego, nazwa, opis, zakres cenowy. Stąd dodawanie nowego przedmiotu zostało zniesione do niższego poziomu,
+	aby poprawić ergonomię funkcjonalności.
+      \end{itemize}
+ \item Poziom 6.
+      \begin{itemize}
+       \item Dodawanie nowych gości.
+       \\Jest to funkcjonalność pozwalająca na dodanie gościa do listy wraz ze szczegółami kontaktowymi, tj. adresem e-mail oraz numerem telefonu (opcjonalnie).
+       \item Dodawanie nowych pozycji do skorowidza.
+       \\Podobnie jak w przypadku gości, skorowidz powinien oferować szczegóły kontaktowe, które należy wprowadzić w oddzielnym ekranie aplikacji.
+      \end{itemize}
+      
+\end{itemize}
 
 \subsection{Aplikacja internetowa}
+W tym podrozdziale przejdziemy do kolejnego komponentu systemu, jakim jest serwis internetowy.
+W założeniach aplikacja internetowa powinna posiadać te same funkcjonalności, co aplikacja mobilna, stąd poświęcimy tu tylko niewielki fragment, w których ujmiemy główne wytyczne tego elementu. 
+
+Smartfony są bardzo wygodnymi urządzeniami wyświetlającymi informacje. Niemniej jednak ich wprowadzanie za pomocą klawiatury systemu Android może już być dosyć kłopotliwe, 
+nawet jeśli myślimy o urządzeniach posiadających dużą przekątną ekranu (np. tablet). Jest to szczególnie dotkliwym problemem, jeśli rozważymy konieczność dodania kilkudziesięciu 
+osób do listy gości, wraz z numerami telefonów oraz adresami e-mail.
+Dlatego też strona internetowa powinna być tym elementem systemu, który pozwoli ułatwić użytkownikowi wprowadzania danych do systemu z poziomu komputera osobistego, ale także wygodne
+ich przeglądanie. W poprzednim podrozdziale bardzo szczegółowo potraktowaliśmy opis funkcjonalności aplikacji mobilnej. W przypadku aplikacji internetowej chcemy wykonać wierną kopię 
+wraz z opisywanym założeniem ``płytkości'' nawigacji, w celu zapewnienia ergonomii systemu.
+
+Należy również podkreślić, że w przypadku strony internetowej uwierzytelnianie będzie odbywać się także za pomocą konta Facebook, które użytkownik już musi posiadać, aby zacząć korzystać
+z aplikacji.
+
+Na koniec chcemy również przypomnieć, że aplikacja internetowa powinna być obsługiwana przez ten sam serwer, co aplikacja mobilna. Zapewni to synchronizację przepływu danych pomiędzy klientami,
+korzystającymi z różnych platform, jak również oszczędności finansowe w chwili gdybyśmy rozpoczęli rozważania nad komercyjnym wdrożeniem systemu.
 
 \subsection{Projekt serwera}
+W tej części pracy omówimy to, w jaki sposób powinien działać projektowany w systemie serwer, jak będzie rozgraniczał komunikację pomiędzy aplikacją mobilną, a internetową, a także w jaki sposób
+zostanie on zintegrowany z bazą danych.
+
+Chociaż wspominaliśmy w podrozdziale dotyczącym założeń projektowanego systemu, że serwer to najważniejsza część aplikacji, to jest to wbrew pozorom dość prosty komponent.
+Cykl działania serwera powinien wyglądać w następujący sposób:
+
+\begin{enumerate}
+ \item Serwer otrzymuje zapytanie od klienta,
+ \item Serwer sprawdza, czy klient jest uwierzytelniony,
+ \item Jeśli nie, to odsyła informację o niepowodzeniu i koniec,
+ \item Jeśli tak, to:
+ \subitem [W przypadku zapytania o informacje z bazy danych] serwer wykonuje zapytanie do bazy danych pod kątem informacji, o które pyta klient,
+ \subitem [W przypadku wprowadzania nowych informacji do bazy danych] serwer parsuje dane od klienta i dodaje odpowiednią krotkę do bazy danych,
+ \item Serwer przetwarza dane, aby opakować je w ustalony dla komunikacji sposób (w naszym przypadku będzie to format JSON, o czym mowa w odpowiednim podrozdziale),
+ \item Serwer odsyła dane klientowi i koniec.
+\end{enumerate}
+
+Jak widać chodzi nam przede wszystkim o to, aby serwer działał w prosty sposób. Ponadto mamy następujące wymagania odnośnie serwera:
+
+\begin{itemize}
+ \item bezpieczeństwo,
+ \item niezawodność,
+ \item możliwość współpracy z zewnętrznym kontem (u nas Facebook),
+ \item szybkość działania,
+ \item możliwość rozwijania systemu.
+\end{itemize}
+
+W związku z tym w projektowanym systemie zdecydowaliśmy się wykorzystać istniejące rozwiązanie jakim jest wysokopoziomowy framework przeznaczony do tworzenia aplikacji internetowych napisanym w Pythonie,
+czyli Django. Szerzej narzędzie to opiszemy w odpowiednim rozdziale. Niemniej na tym etapie należy wspomnieć, że Django opiera się na wzorcu projektowym podobnym do Model-View-Controller,
+dzięki czemu charakteryzuje się bardzo modułowym sposobem tworzenia aplikacji.
+W momencie kiedy mamy już model (czyli tak naprawdę tabelę bazy danych), wystarczy napisać odpowiedni widok, który jest pewnego rodzaju funkcją uruchamianą po nadejściu zapytania od klienta.
+Funkcja ta wyciąga zadane informacje z bazy danych, następnie opakowuje do uzgodnionego formatu i odsyła klientowi. Dzięki temu chcąc nadać systemowi nową funkcjonalność nie ma konieczności
+ingerowania w już istniejące. Poza tym Django, jako narzędzie cały czas rozwijane cechuje się wysoką wydajnością, bezpieczeństwem, a także wygodą użytkowania. Django generuje automatycznie panel
+administratorski, wspiera różnego rodzaju wtyczki, dzięki czemu można do aplikacji logować się kontem społecznościowym, jak również oferuje serwer deweloperski do testowania aplikacji.
+
+Nasz serwer działa w taki sposób, że każda funkcja (widok) jest niejako zduplikowana. Wynika to z konieczności obsłużenia dwóch rodzajów klientów: smartfona oraz przeglądarki internetowej.
+W przypadku tego pierwszego chcemy móc wygodnie parsować dane, co wiąże się z koniecznością przesyłania ich w odpowiednim formacie. Zdecydowaliśmy się na JSON, z którym Android radzi sobie bardzo dobrze.
+W kwestii przeglądarki internetowej dane chcemy od razu wyświetlać w docelowym otoczeniu czyli szablonie strony internetowej.
+
+Ważna jest też integracja z bazą danych. Domyślnie Django (w zintegrowany sposób) wspiera system SQLite, który jest dużo wydajniejszy przy obsłudze jednego użytkownika od np. MySQL, czy PostreSQL.
+Skrypty tworzące bazę danych leżą po stronie mechanizmów framework'u, oraz unikamy konieczności pisania zapytań do bazy danych, którymi ten również się zajmuje.
 
 \subsection{Projekt bazy danych}
-
+Opis tabel w ujeciu funkcjonalnosci
+Diagram bazy danych
 \subsection{Opis komunikacji}
-
+Json: obiekt i tablica
+Strona internetowa i wyjasnienie MVT troche bardziej. Z naciskiem na T.
 \subsection{Opis algorytmów}
-
-
+Algorytm generowania losowego, unikalnego kodu i jak to sie dzieje w aplikacji
+\newpage
 \section{Implementacja sytemu}
 
 \subsection{Opis technologii}
@@ -272,12 +437,14 @@ napisze tu jeszcze o integracji z baza danych, oraz komunikacja, a takze ze serw
 \subsubsection{Serwer aplikacji}
 \subsection{Szczegóły implementacyjne}
 
+\newpage
 \section{Instalacja i wdrożenie systemu}
 
-\section{Dodatek A - Opis płyty}
-
+\newpage
 \section*{Podsumowanie}
 
+\newpage
+\appendix{Dodatek A - Opis płyty}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BIBLIOGRAFIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
