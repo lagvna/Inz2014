@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.lagvna.perfectday.BrowseContactsActivity;
 import com.lagvna.perfectday.EventActivity;
 import com.lagvna.perfectday.GuestsActivity;
 import com.lagvna.perfectday.R;
@@ -22,6 +23,7 @@ public class SummaryFragment extends Fragment {
 	private TextView description;
 	private EventActivity ea;
 	private Button guestList;
+	private Button contactList;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -44,12 +46,23 @@ public class SummaryFragment extends Fragment {
 		description.setText(ea.description);
 
 		guestList = (Button) rootView.findViewById(R.id.guestList);
+		contactList = (Button) rootView.findViewById(R.id.contactList);
 
 		guestList.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), GuestsActivity.class);
+				startActivity(i);
+			}
+		});
+
+		contactList.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(),
+						BrowseContactsActivity.class);
 				startActivity(i);
 			}
 		});

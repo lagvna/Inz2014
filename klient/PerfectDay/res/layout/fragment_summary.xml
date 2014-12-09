@@ -218,7 +218,7 @@
                 android:layout_weight="1.0"
                 android:text="Lista gości" />
             <Button
-                android:id="@+id/companyList"
+                android:id="@+id/contactList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"

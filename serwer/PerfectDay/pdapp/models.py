@@ -12,6 +12,11 @@ class Event(models.Model):
     code = models.CharField(max_length=200)
     organizer = models.ForeignKey(User)
 
+class Appointment(models.Model):
+    description = models.CharField(max_length=1000)
+    isDone = models.BooleanField(default = False)
+    event = models.ForeignKey(Event)
+
 class Firm(models.Model):
     name = models.CharField(max_length = 200)
     sector = models.CharField(max_length = 200)

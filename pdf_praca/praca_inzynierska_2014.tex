@@ -1,4 +1,4 @@
-\documentclass[10pt,titlepage]{article}
+\documentclass[12pt,titlepage]{article}
 \usepackage{graphicx}
 %\usepackage{graphics}
 \usepackage{epsfig}
@@ -11,7 +11,7 @@
 %\usepackage{longtable}
 \usepackage[figuresright]{rotating}
 
-\usepackage[toc,page]{appendix}
+\usepackage[titletoc,page]{appendix}
 \usepackage{polski}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -34,7 +34,8 @@
 \usepackage{color}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
-
+\renewcommand\appendixname{Dodatek}
+\renewcommand\appendixpagename{Dodatki}
 \colorlet{xlightblue}{blue!5}
 
 \newtcolorbox{beamerlikethm}[1]{
@@ -142,7 +143,7 @@ Istnieje jednak luka dla aplikacji, która:
 \begin{itemize}
  \item posłuży do organizacji różnego typu wydarzeń,
  \item pozwoli organizować zarówno wydarzenia o charakterze bardzo uroczystym, jak i te nieformalne,
- \item zintegruje wszystkich, którzy są uczestnikami wydarzenia,
+ \item zintegruje wszystkich uczestników wydarzenia,
  \item wyręczy organizatora w części obowiązków.
 \end{itemize}
 
@@ -421,13 +422,71 @@ Ważna jest też integracja z bazą danych. Domyślnie Django (w zintegrowany sp
 Skrypty tworzące bazę danych leżą po stronie mechanizmów framework'u, oraz unikamy konieczności pisania zapytań do bazy danych, którymi ten również się zajmuje.
 
 \subsection{Projekt bazy danych}
-Opis tabel w ujeciu funkcjonalnosci
-Diagram bazy danych
-\subsection{Opis komunikacji}
-Json: obiekt i tablica
-Strona internetowa i wyjasnienie MVT troche bardziej. Z naciskiem na T.
-\subsection{Opis algorytmów}
-Algorytm generowania losowego, unikalnego kodu i jak to sie dzieje w aplikacji
+
+\begin{figure}[htb]
+\begin{center}
+ \includegraphics[scale=0.45]{/home/lagvna/Dokumenty/inz_gfx/dbpart.png}
+ \caption{Diagram przedstawiający schemat bazy danych serwera}
+ \label{fig:dbpart}
+\end{center}
+\end{figure}
+\newpage
+W tym podrozdziale zajmiemy się dokładniejszym omówieniem bazy danych, w ujęciu funkcjonalności systemu oraz potrzeby silnej jej integracji z serwerem, o czym wspominaliśmy w poprzednich częściach
+pracy. Z tego też względu, dla ustalenia uwagi, rozpoczęliśmy od Rysunku~\ref{fig:dbpart}, do którego będziemy się odwoływać.
+
+Zaprojektowane przez nas w bazie danych tabele dotyczą:
+
+\begin{enumerate}
+ \item Wydarzenia (\textbf{pdapp\_event})
+ \item Gości (\textbf{pdapp\_guest})
+ \item Kontaktu ze skorowidza (\textbf{pdapp\_firm})
+ \item Tablicy dyskusyjnej (\textbf{pdapp\_wall})
+ \item Odpowiedzi w wątku tablicy dyskusyjnej (\textbf{pdapp\_response})
+ \item Spraw do załatwienia (\textbf{pdapp\_appointment})
+ \item Prezentu (\textbf{pdapp\_gift})
+ \item Przedmiotu (\textbf{pdapp\_item})
+\end{enumerate}
+
+Oprócz powyższych mamy jeszcze tabelę \textbf{auth\_user}. Jest to tabela generowana przez mechanizm uwierzytelniania użytkowników przez serwer. Jednak umieściliśmy ją na Rysunku~\ref{fig:dbpart}, dla pełniejszego
+zrozumienia kompozycji bazy danych.
+Ponadto w Dodatku~\ref{sec:dball} zaprezentowano cały schemat bazy danych jakim posługuje się serwer. Tabele te są wynikiem wbudowanego w serwer Django mechanizmu uwierzytelniania i autoryzacji, a także
+obsługi logowania za pomocą kont społecznościowych przez wtyczkę Allauth.
+
+Omówimy teraz pokrótce wypunktowane tabele:
+
+\begin{itemize}
+ \item[Ad 1.] Wydarzenia to centralna tabela bazy danych. Konkretna krotka należy do organizatora. Posiada pola opisujące nazwę, datę, miejsce, oraz krótki opis.
+ \item[Ad 2.] Goście przynależą do danego wydarzenia. Jest to jednak lista kontaktowa organizatora, w której wyróżniamy między innymi numer telefonu oraz e-mail.
+ \item[Ad 3.] Kontakty w założeniach mają opisywać dane firm obsługujących wydarzenie.
+ \item[Ad 4.] Tablica dyskusyjna to tzw. wpisy główne. Przyrównując do forum, powiedzielibyśmy, że to wątki.
+ \item[Ad 5.] Celem tej tabeli jest przypisanie odpowiedzi w dyskusji do wątków.
+ \item[Ad 6.] Sprawy do załatwienia opisują wspomniane w podrozdziale o funkcjonalnościach aplikacji mobilnej notatki organizatora.
+ \item[Ad 7.] Rekordy systemu zapisów na prezenty (wydarzenie formalne).
+ \item[Ad 8.] Rekordy systemu zapisów na przedmioty (wydarzenie nieformalne).
+\end{itemize}
+
+Całość pozwala obsłużyć wszystkie zaprojektowane dla aplikacji klienckich funkcjonalności. Dodatkowo baza danych zachowuje przy takiej budowie prostotę oraz możliwość dalszej rozbudowy
+w przypadku dodawania do systemu nowych funkcjonalności.
+
+\subsection{Opis komunikacji} %moze tu jeszcze dorzucic diagram ten co z prezentacji u Klonowskiego?
+Aby połączyć ze sobą wszystkie komponenty systemu należało zaprojektować ustalony sposób porozumiewania, aby dane mogły sprawnie przepływać. Dlatego też opiszemy w jaki sposób aplikacje
+klienckie pytają serwer o dane, oraz jak ten odpowiada na żądania.
+
+W przypadku aplikacji mobilnej komunikacja z serwerem odbywa się poprzez tekstowy format JSON. Wynika to z faktu, że jest to format, który zajmuje mało miejsca w porównaniu z innymi rozwiązaniami.
+Jest to także proste i czytelne rozwiązanie, bowiem obiekt JSON to zbiór elementów typu klucz-wartość.
+\begin{beamerlikethm}{Przykład obiektu typu JSON}
+\{``name'': ``Jarek'', ``surname'': ``Mirek'', ``phone'': ``505404303''\}
+\end{beamerlikethm}
+Co istotne nasza aplikacja kliencka ma charakter online, wobec czego wszystkie informacje są na bieżąco pobierane przez sieć internetową, stąd chcieliśmy aby sumarycznie zminimalizować ich ilość.
+W takiej sytuacji JSON był odpowiednim rozwiązaniem, szczególnie w konfrontacji np. z formatem XML.
+
+Przejdźmy teraz do aplikacji internetowej, w której komunikacja jest kwestią bardzo przyjemną. Jak już wspominaliśmy Django używa wzorca projektowego Model-View-Template. 
+Ten ostatni człon stanowi o miejscu wyświetlania danych serwera. Template to nic innego jak strona internetowa napisana w języku HTML, jednak Django oferuje nam wpisywanie 
+w kodzie słów kluczowych (specjalnie dla niego przewidzianych), wyświetlających dane z bazy danych, które to później tłumaczy na standardowy język HTML. 
+To kolejna zaleta stosowanego rozwiązania, ponieważ pozwala stworzyć dynamiczny serwis internetowy przy oszczędności nakładów pracy i dba za nas o komunikację, gdyż jest to część serwera.
+
+\subsection{Opis algorytmu generowania losowego, unikalnego kodu}
+Algorytm generowania losowego, unikalnego kodu i jak to sie dzieje w aplikacji, python, skrypt, wysyłka, zapisanie w bazie
 \newpage
 \section{Implementacja sytemu}
 
@@ -443,14 +502,31 @@ Algorytm generowania losowego, unikalnego kodu i jak to sie dzieje w aplikacji
 \newpage
 \section*{Podsumowanie}
 
-\newpage
-\appendix{Dodatek A - Opis płyty}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BIBLIOGRAFIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage
 \bibliographystyle{plain}
 %\marginpar{Znajdź w internecie porządnie zredagowane cytowania}
 \bibliography{P2P}
+\newpage
+\begin{appendices}
+\section{Opis płyty}
+\newpage
+ \section{Pełny schemat bazy danych}
+ \label{sec:dball}
+ \begin{figure}[htb]
+\begin{center}
+ \includegraphics[scale=0.4]{/home/lagvna/Dokumenty/inz_gfx/dball.png}
+ \caption{Diagram przedstawiający pełny schemat bazy danych, wraz z tabelami Django oraz wtyczki Allauth}
+ \label{fig:db}
+ \end{center}
+\end{figure}
+
+\end{appendices}
+
+
+
 
 \end{document}

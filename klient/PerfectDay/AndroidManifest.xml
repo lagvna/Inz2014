@@ -47,11 +47,11 @@
             android:label="@string/title_activity_company" >
         </activity>
         <activity
-            android:name=".AddAdvertActivity"
+            android:name=".AddContactActivity"
             android:label="@string/title_activity_add_advert" >
         </activity>
         <activity
-            android:name=".BrowseAdvertsActivity"
+            android:name=".BrowseContactsActivity"
             android:label="@string/title_activity_browse_adverts" >
         </activity>
         <activity

@@ -19,12 +19,12 @@ public class CompanyActivity extends Activity {
 	}
 
 	public void browseAdverts(View v) {
-		Intent i = new Intent(CompanyActivity.this, BrowseAdvertsActivity.class);
+		Intent i = new Intent(CompanyActivity.this, BrowseContactsActivity.class);
 		CompanyActivity.this.startActivity(i);
 	}
 
 	public void addAdvert(View v) {
-		Intent i = new Intent(CompanyActivity.this, AddAdvertActivity.class);
+		Intent i = new Intent(CompanyActivity.this, AddContactActivity.class);
 		CompanyActivity.this.startActivity(i);
 	}
 }

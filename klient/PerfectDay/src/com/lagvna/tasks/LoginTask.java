@@ -1,17 +1,14 @@
 package com.lagvna.tasks;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -60,12 +57,15 @@ public class LoginTask extends AsyncTask<Void, Void, Void> {
 			}
 			System.err.println(entity.toString());
 			headers = httpResponse.getAllHeaders();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			callingActivity.runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(
+							callingActivity,
+							"Coś poszło nie tak! Sprawdź połączenie z internetem!",
+							Toast.LENGTH_SHORT).show();
+				}
+			});
 		}
 
 		return null;
