@@ -15,6 +15,99 @@ def index(request):
 
 
 @csrf_exempt
+def android_addnote(request):
+    print(request.COOKIES)
+    response_data = {}
+    if (request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['eventid'])
+        tmpEvent = Event.objects.get(id=tmpId)
+
+        print('okej')
+        print(user.id)
+        print(request.session.session_key)
+        new_note = Appointment(description=request.GET['note'], event=tmpEvent)
+        new_note.save()
+        # print(new_event)
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie dodano notatke'
+        response_data['description'] = new_note.description
+        response_data['isdone'] = new_note.isDone
+        response_data['id'] = new_note.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+@csrf_exempt
+def android_getallcontacts(request):
+    print(request.COOKIES)
+    response_data = {}
+    response_contacts = []
+    if (request.user.is_authenticated()):
+        tmpEvent = Event.objects.filter(id = request.GET['eventid'])
+        tmpContact = Firm.objects.filter(event = tmpEvent)
+        for co in tmpContact:
+            coName = co.name
+            coSector = co.sector
+            coEmail = co.email
+            coTelephone = co.telephone
+            coNote = co.note
+            coId = co.id
+            record = {'name': coName, 'sector': coSector, 'email': coEmail, 'telephone': coTelephone, 'note': coNote, 'id': coId}
+            print record
+            response_contacts.append(record)
+
+        response_data['contacts'] = response_contacts
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie pobrano wszystkie kontakty'
+
+        print('okej')
+        user = request.user
+        print(user.id)
+        print(request.session.session_key)
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        print('zle')
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+@csrf_exempt
+def android_addcontact(request):
+    print(request.COOKIES)
+    response_data = {}
+    if (request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['eventid'])
+        tmpEvent = Event.objects.get(id=tmpId)
+
+        print('okej')
+        print(user.id)
+        print(request.session.session_key)
+        new_contact = Firm(name=request.GET['name'], sector=request.GET['sector'],
+                          telephone=request.GET['telephone'], email=request.GET['email'],
+                          note=request.GET['note'], event=tmpEvent)
+        new_contact.save()
+        # print(new_event)
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie dodano kontakt'
+        response_data['name'] = new_contact.name
+        response_data['sector'] = new_contact.sector
+        response_data['email'] = new_contact.email
+        response_data['telephone'] = new_contact.telephone
+        response_data['note'] = new_contact.note
+        response_data['id'] = new_contact.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+@csrf_exempt
 def android_checkuser(request):
     print(request.COOKIES)
     response_data = {}
@@ -46,6 +139,11 @@ def android_remove(request):
             tmpId = int(request.GET['id'])
             Guest.objects.filter(id=tmpId).delete()
             response_data['message'] = 'Pomyslnie usunieto goscia'
+        if (request.GET['type'] == 'contact'):
+            print('guest')
+            tmpId = int(request.GET['id'])
+            Firm.objects.filter(id=tmpId).delete()
+            response_data['message'] = 'Pomyslnie usunieto kontakt'
 
         response_data['result'] = 'success'
 

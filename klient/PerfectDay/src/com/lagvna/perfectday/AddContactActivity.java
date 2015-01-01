@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.lagvna.helpers.DataHelper;
+import com.lagvna.tasks.AddContactTask;
 
 public class AddContactActivity extends Activity {
 	private EditText name;
@@ -149,14 +150,14 @@ public class AddContactActivity extends Activity {
 
 	private void processInput() {
 		emailTxt = emailTxt.replace("@", ".at.");
-		nameTxt = nameTxt.replace(" ", "");
+		nameTxt = nameTxt.replace(" ", "%20");
 		emailTxt = emailTxt.replace(" ", "");
 		telephoneTxt = telephoneTxt.replace(" ", "");
 		noteTxt = noteTxt.replace(" ", "%20");
 	}
 
 	private void addContact() {
-		// new AddContactTask(this, nameTxt, sectorTxt, emailTxt, telephoneTxt,
-		// noteTxt, eventId).execute();
+		new AddContactTask(this, nameTxt, sectorTxt, emailTxt, telephoneTxt,
+				noteTxt, eventId).execute();
 	}
 }

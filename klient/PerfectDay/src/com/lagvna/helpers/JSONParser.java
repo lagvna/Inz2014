@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lagvna.customtypes.Contact;
 import com.lagvna.customtypes.Event;
 import com.lagvna.customtypes.Guest;
 
@@ -14,6 +15,7 @@ public class JSONParser {
 	private ArrayList<String> resultArray = new ArrayList<String>();
 	private ArrayList<Event> eventArray = new ArrayList<Event>();
 	private ArrayList<Guest> guestArray = new ArrayList<Guest>();
+	private ArrayList<Contact> contactArray = new ArrayList<Contact>();
 
 	public JSONParser(String inputStream) {
 
@@ -59,7 +61,6 @@ public class JSONParser {
 
 	public ArrayList<Event> getEvents(String events) throws JSONException {
 		JSONArray ja = new JSONArray(events);
-		// JSONObject jo = new JSONObject();
 
 		for (int i = 0; i < ja.length(); i++) {
 			JSONObject jo = new JSONObject();
@@ -84,7 +85,6 @@ public class JSONParser {
 
 	public ArrayList<Guest> getGuests(String guests) throws JSONException {
 		JSONArray ja = new JSONArray(guests);
-		// JSONObject jo = new JSONObject();
 
 		for (int i = 0; i < ja.length(); i++) {
 			JSONObject jo = new JSONObject();
@@ -99,6 +99,31 @@ public class JSONParser {
 		return guestArray;
 	}
 
+	public ArrayList<String> getGetAllContactsTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.get("contacts").toString());
+
+		return resultArray;
+	}
+
+	public ArrayList<Contact> getContacts(String contacts) throws JSONException {
+		JSONArray ja = new JSONArray(contacts);
+
+		for (int i = 0; i < ja.length(); i++) {
+			JSONObject jo = new JSONObject();
+			jo = ja.getJSONObject(i);
+			contactArray.add(new Contact(jo.getString("id"), jo
+					.getString("name"), jo.getString("sector"), jo.getString(
+					"email").replace(".at.", "@"), jo.getString("telephone"),
+					jo.getString("note")));
+		}
+
+		return contactArray;
+	}
+
 	public ArrayList<String> getAddGuestTaskResult() throws JSONException {
 		JSONObject jo = new JSONObject(inputStream);
 
@@ -109,6 +134,33 @@ public class JSONParser {
 		resultArray.add(jo.getString("email"));
 		resultArray.add(jo.getString("phone"));
 		resultArray.add(jo.getString("event"));
+		resultArray.add(jo.getString("id"));
+
+		return resultArray;
+	}
+
+	public ArrayList<String> getAddContactTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("name"));
+		resultArray.add(jo.getString("sector"));
+		resultArray.add(jo.getString("email"));
+		resultArray.add(jo.getString("telephone"));
+		resultArray.add(jo.getString("note"));
+		resultArray.add(jo.getString("id"));
+
+		return resultArray;
+	}
+
+	public ArrayList<String> getAddNoteTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("description"));
+		resultArray.add(jo.getString("isdone"));
 		resultArray.add(jo.getString("id"));
 
 		return resultArray;

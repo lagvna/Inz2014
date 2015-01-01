@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.lagvna.fragments.GiftFragment;
-import com.lagvna.fragments.InventoryFragment;
+import com.lagvna.fragments.NotesFragment;
 import com.lagvna.fragments.SummaryFragment;
 import com.lagvna.fragments.WallFragment;
 
@@ -24,7 +24,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 		case 1:
 			return new WallFragment();
 		case 2:
-			return new InventoryFragment();
+			return new NotesFragment();
 		case 3:
 			return new GiftFragment();
 		}

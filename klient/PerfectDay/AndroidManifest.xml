@@ -70,6 +70,10 @@
             android:name=".AddGuestActivity"
             android:label="@string/title_activity_add_guest" >
         </activity>
+        <activity
+            android:name=".AddNoteActivity"
+            android:label="@string/title_activity_add_note" >
+        </activity>
     </application>
 
 </manifest>

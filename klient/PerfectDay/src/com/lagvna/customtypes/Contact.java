@@ -9,9 +9,11 @@ public class Contact implements Serializable {
 	private String telephone;
 	private String email;
 	private String note;
+	private String id;
 
-	public Contact(String name, String sector, String telephone, String email,
-			String note) {
+	public Contact(String id, String name, String sector, String email,
+			String telephone, String note) {
+		this.setId(id);
 		this.setName(name);
 		this.setSector(sector);
 		this.setTelephone(telephone);
@@ -57,6 +59,14 @@ public class Contact implements Serializable {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

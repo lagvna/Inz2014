@@ -42,7 +42,7 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/delContact"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,13 +114,13 @@
                     android:orientation="vertical"
                     android:padding="5dp" >
 
-                    <TextView
+                    <Button
                         android:id="@+id/contactTelephone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Telefon" />
 
-                    <TextView
+                    <Button
                         android:id="@+id/contactEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

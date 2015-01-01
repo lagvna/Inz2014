@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
 import com.lagvna.adapters.TabsPagerAdapter;
+import com.lagvna.helpers.DataHelper;
+import com.lagvna.tasks.GetAllContactsTask;
 
 @SuppressWarnings("deprecation")
 public class EventActivity extends FragmentActivity implements
@@ -37,7 +39,8 @@ public class EventActivity extends FragmentActivity implements
 		actionBar.setDisplayUseLogoEnabled(false);
 
 		getExtras();
-		// System.out.println(name);
+
+		getNotes();
 
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
@@ -65,6 +68,11 @@ public class EventActivity extends FragmentActivity implements
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
+	}
+
+	private void getNotes() {
+		new GetAllNotesTask(this, DataHelper.getInstance().getEventId())
+				.execute();
 	}
 
 	private void getExtras() {
@@ -104,6 +112,5 @@ public class EventActivity extends FragmentActivity implements
 
 	public void onBackPressed() {
 		EventActivity.this.finish();
-		// overridePendingTransition(R.anim.in_left, R.anim.out_right);
 	}
 }

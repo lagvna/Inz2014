@@ -54,9 +54,9 @@ public class LoginActivity extends FragmentActivity {
 
 		uiHelper = new UiLifecycleHelper(this, statusCallback);
 		uiHelper.onCreate(savedInstanceState);
-		
+
 		DataHelper.getInstance().setServerUrl(
-				"http://192.168.1.103:8000/pdapp/");
+				"http://192.168.1.101:8000/pdapp/");
 
 		la = this;
 
@@ -145,9 +145,9 @@ public class LoginActivity extends FragmentActivity {
 			}
 		}
 		DataHelper.getInstance().setCookies(tmp);
-		System.out.println("SESJA: "+ DataHelper.getInstance().getSession());
+		System.out.println("SESJA: " + DataHelper.getInstance().getSession());
 	}
-	
+
 	private Session.StatusCallback statusCallback = new Session.StatusCallback() {
 		@Override
 		public void call(Session session, SessionState state,
@@ -236,5 +236,9 @@ public class LoginActivity extends FragmentActivity {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public void onBackPressed() {
+		LoginActivity.this.finish();
 	}
 }
