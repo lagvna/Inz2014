@@ -1,20 +1,27 @@
 package com.lagvna.perfectday;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import com.lagvna.adapters.TabsPagerAdapter;
+import com.lagvna.customtypes.Note;
 import com.lagvna.helpers.DataHelper;
-import com.lagvna.tasks.GetAllContactsTask;
+import com.lagvna.tasks.GetAllNotesTask;
+import com.lagvna.tasks.RemoveNoteTask;
 
 @SuppressWarnings("deprecation")
 public class EventActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
+	public ArrayList<Note> noteArr;
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	public TabsPagerAdapter mAdapter;
@@ -25,7 +32,9 @@ public class EventActivity extends FragmentActivity implements
 	public String description;
 	public String code;
 
-	// private ProgressDialog progressDialog;
+	public int currNote = -1;
+
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +79,34 @@ public class EventActivity extends FragmentActivity implements
 		});
 	}
 
+	public void delete(int d) {
+		new RemoveNoteTask(this, "note", noteArr.get(d).getId(), d).execute();
+	}
+
 	private void getNotes() {
 		new GetAllNotesTask(this, DataHelper.getInstance().getEventId())
 				.execute();
+	}
+
+	public void showProgressDial() {
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setMessage("Łączenie z serwerem");
+		progressDialog.show();
+	}
+
+	public void hideProgressDial() {
+		progressDialog.hide();
+	}
+
+	public void raiseError(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+	}
+
+	public void createNoteList(ArrayList<Note> noteArr) {
+		this.noteArr = noteArr;
+		if (noteArr.size() > 0) {
+			currNote = 0;
+		}
 	}
 
 	private void getExtras() {

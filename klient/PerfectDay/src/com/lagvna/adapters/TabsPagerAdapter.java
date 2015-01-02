@@ -10,7 +10,11 @@ import com.lagvna.fragments.SummaryFragment;
 import com.lagvna.fragments.WallFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
-
+	public SummaryFragment sf;
+	public WallFragment wf;
+	public NotesFragment nf;
+	public GiftFragment gf;
+	
 	public TabsPagerAdapter(FragmentManager fm) {
 		super(fm);
 	}
@@ -20,13 +24,17 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
 		switch (index) {
 		case 0:
-			return new SummaryFragment();
+			sf = new SummaryFragment();
+			return sf;
 		case 1:
-			return new WallFragment();
+			wf = new WallFragment();
+			return wf;
 		case 2:
-			return new NotesFragment();
+			nf = new NotesFragment();
+			return nf;
 		case 3:
-			return new GiftFragment();
+			gf = new GiftFragment();
+			return gf;
 		}
 
 		return null;

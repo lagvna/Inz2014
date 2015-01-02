@@ -17,19 +17,21 @@ import android.widget.Toast;
 
 import com.lagvna.helpers.DataHelper;
 import com.lagvna.helpers.JSONParser;
-import com.lagvna.perfectday.AddNoteActivity;
+import com.lagvna.perfectday.EventActivity;
 
-public class AddNoteTask extends AsyncTask<Void, Void, Void> {
-	private AddNoteActivity callingActivity;
+public class RemoveNoteTask extends AsyncTask<Void, Void, Void> {
+	private EventActivity callingActivity;
 	private String url;
 	private ArrayList<String> result;
 	private String message;
+	private int position;
 
-	public AddNoteTask(AddNoteActivity callingActivity, String note,
-			String eventId) {
+	public RemoveNoteTask(EventActivity callingActivity, String type,
+			String id, int position) {
+		this.position = position;
 		this.callingActivity = callingActivity;
-		url = DataHelper.getInstance().getServerUrl() + "addnote?note=" + note
-				+ "&eventid=" + eventId;
+		url = DataHelper.getInstance().getServerUrl() + "remove?type=" + type
+				+ "&id=" + id;
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class AddNoteTask extends AsyncTask<Void, Void, Void> {
 			String res = EntityUtils.toString(entity);
 			System.out.println(res);
 			JSONParser jp = new JSONParser(res);
-			result = jp.getAddNoteTaskResult();
+			result = jp.getRemoveSthTaskResult();
 			if (entity != null) {
 				if (result.get(0).equals("success")) {
 					message = result.get(1);
@@ -78,14 +80,14 @@ public class AddNoteTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void arg) {
 		callingActivity.hideProgressDial();
-		callingActivity.setNoteDetails(result.get(2), result.get(3),
-				result.get(4));
+		if (result.get(0).equals("success")) {
+			callingActivity.mAdapter.nf.postDelete(position);
+		}
 		callingActivity.runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(callingActivity, message, Toast.LENGTH_SHORT)
 						.show();
 			}
 		});
-		callingActivity.finish();
 	}
 }

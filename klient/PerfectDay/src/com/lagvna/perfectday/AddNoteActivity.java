@@ -35,8 +35,9 @@ public class AddNoteActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				if (!note.getText().equals("")) {
+				if (!note.getText().toString().equals("")) {
 					noteTxt = note.getText().toString();
+					System.err.println(noteTxt);
 					processInput();
 					addNote();
 				} else	{

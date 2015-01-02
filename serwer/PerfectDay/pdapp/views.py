@@ -15,6 +15,38 @@ def index(request):
 
 
 @csrf_exempt
+def android_getallnotes(request):
+    print(request.COOKIES)
+    response_data = {}
+    response_contacts = []
+    if (request.user.is_authenticated()):
+        tmpEvent = Event.objects.filter(id = request.GET['eventid'])
+        tmpNote = Appointment.objects.filter(event = tmpEvent)
+        for co in tmpNote:
+            noDescription = co.description
+            noIsdone = co.isDone
+            coId = co.id
+            record = {'description': noDescription, 'isdone': noIsdone, 'id': coId}
+            print record
+            response_contacts.append(record)
+
+        response_data['notes'] = response_contacts
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie pobrano wszystkie notatki'
+
+        print('okej')
+        user = request.user
+        print(user.id)
+        print(request.session.session_key)
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        print('zle')
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+
+@csrf_exempt
 def android_addnote(request):
     print(request.COOKIES)
     response_data = {}
@@ -26,7 +58,7 @@ def android_addnote(request):
         print('okej')
         print(user.id)
         print(request.session.session_key)
-        new_note = Appointment(description=request.GET['note'], event=tmpEvent)
+        new_note = Appointment(description=request.GET['note'], isDone=False, event=tmpEvent)
         new_note.save()
         # print(new_event)
         response_data['result'] = 'success'
@@ -144,6 +176,10 @@ def android_remove(request):
             tmpId = int(request.GET['id'])
             Firm.objects.filter(id=tmpId).delete()
             response_data['message'] = 'Pomyslnie usunieto kontakt'
+        if (request.GET['type'] == 'note'):
+            tmpId = int(request.GET['id'])
+            Appointment.objects.filter(id=tmpId).delete()
+            response_data['message'] = 'Pomyslnie usunieto notatke'
 
         response_data['result'] = 'success'
 

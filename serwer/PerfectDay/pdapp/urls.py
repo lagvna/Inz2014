@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r'^addcontact/', views.android_addcontact, name = 'addcontact'),
     url(r'^getallcontacts/', views.android_getallcontacts, name = 'getallcontacts'),
     url(r'^addnote/', views.android_addnote, name = 'addnote'),
+    url(r'^getallnotes/', views.android_getallnotes, name = 'getallnotes'),
 )

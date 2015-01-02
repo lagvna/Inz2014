@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import com.lagvna.customtypes.Contact;
 import com.lagvna.customtypes.Event;
 import com.lagvna.customtypes.Guest;
+import com.lagvna.customtypes.Note;
 
 public class JSONParser {
 	private String inputStream;
@@ -16,6 +17,7 @@ public class JSONParser {
 	private ArrayList<Event> eventArray = new ArrayList<Event>();
 	private ArrayList<Guest> guestArray = new ArrayList<Guest>();
 	private ArrayList<Contact> contactArray = new ArrayList<Contact>();
+	private ArrayList<Note> notesArray = new ArrayList<Note>();
 
 	public JSONParser(String inputStream) {
 
@@ -122,6 +124,29 @@ public class JSONParser {
 		}
 
 		return contactArray;
+	}
+
+	public ArrayList<String> getGetAllNotesTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.get("notes").toString());
+
+		return resultArray;
+	}
+
+	public ArrayList<Note> getNotes(String notes) throws JSONException {
+		JSONArray ja = new JSONArray(notes);
+
+		for (int i = 0; i < ja.length(); i++) {
+			JSONObject jo = new JSONObject();
+			jo = ja.getJSONObject(i);
+			notesArray.add(new Note(jo.getString("id"), jo.getString("isdone"),
+					jo.getString("description")));
+		}
+
+		return notesArray;
 	}
 
 	public ArrayList<String> getAddGuestTaskResult() throws JSONException {

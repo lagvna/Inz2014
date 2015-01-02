@@ -1,7 +1,5 @@
 package com.lagvna.fragments;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +9,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.lagvna.customtypes.Note;
 import com.lagvna.perfectday.AddNoteActivity;
+import com.lagvna.perfectday.EventActivity;
 import com.lagvna.perfectday.R;
 
 public class NotesFragment extends Fragment {
-	private ArrayList<Note> notesArr;
+	private EventActivity ea;
 
 	private Button next;
 	private Button prev;
 	private Button addNote;
 	private Button deleteNote;
+	private TextView noteArea;
+
+	public int currNote;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -30,17 +33,30 @@ public class NotesFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_notes, container,
 				false);
 
+		ea = (EventActivity) getActivity();
+
 		next = (Button) rootView.findViewById(R.id.next);
 		prev = (Button) rootView.findViewById(R.id.prev);
 		addNote = (Button) rootView.findViewById(R.id.addNoteF);
 		deleteNote = (Button) rootView.findViewById(R.id.delNoteF);
+		noteArea = (TextView) rootView.findViewById(R.id.noteArea);
+
+		currNote = ea.currNote;
+
+		if (currNote > -1) {
+			setCurrNote();
+		}
 
 		next.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
+				if (currNote > -1) {
+					if (currNote < ea.noteArr.size() - 1) {
+						currNote++;
+						setCurrNote();
+					}
+				}
 			}
 		});
 
@@ -48,8 +64,12 @@ public class NotesFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
+				if (currNote > -1) {
+					if (currNote > 0) {
+						currNote--;
+						setCurrNote();
+					}
+				}
 			}
 		});
 
@@ -66,12 +86,28 @@ public class NotesFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
+				if (currNote > -1) {
+					int toDel = currNote;
+					ea.delete(toDel);
+				}
 			}
 		});
 
 		return rootView;
+	}
+
+	public void postDelete(int position) {
+		ea.noteArr.remove(position);
+		currNote = ea.noteArr.size() - 1;
+		setCurrNote();
+	}
+
+	public void setCurrNote() {
+		if (currNote > -1) {
+			noteArea.setText(ea.noteArr.get(currNote).getDescription());
+		} else {
+			noteArea.setText("");
+		}
 	}
 
 	@Override
@@ -84,7 +120,9 @@ public class NotesFragment extends Fragment {
 			String isDone = (String) extras.getString("isDone");
 			String id = (String) extras.getString("id");
 
-			//notesArr.add(new Note(id, isDone, description));
+			ea.noteArr.add(new Note(id, isDone, description));
+			currNote = ea.noteArr.size() - 1;
+			setCurrNote();
 		}
 	}
 }

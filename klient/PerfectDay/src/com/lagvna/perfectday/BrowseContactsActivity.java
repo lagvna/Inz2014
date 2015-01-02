@@ -91,7 +91,7 @@ public class BrowseContactsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				if (currContact != -1) {
+				if (currContact > -1) {
 					if (currContact < contactArr.size() - 1) {
 						currContact++;
 						setCurrContact();
@@ -117,8 +117,10 @@ public class BrowseContactsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				int toDel = currContact;
-				delete(toDel);
+				if (currContact > -1) {
+					int toDel = currContact;
+					delete(toDel);
+				}
 			}
 		});
 	}
@@ -130,9 +132,7 @@ public class BrowseContactsActivity extends Activity {
 
 	public void postDelete(int position) {
 		contactArr.remove(position);
-		if(currContact > 0)	{
-			currContact--;
-		}
+		currContact--;
 		setCurrContact();
 	}
 
@@ -146,14 +146,22 @@ public class BrowseContactsActivity extends Activity {
 	}
 
 	private void setCurrContact() {
-		Contact c = contactArr.get(currContact);
+		if (currContact > -1) {
+			Contact c = contactArr.get(currContact);
 
-		nameTxt = c.getName();
-		sectorTxt = c.getSector();
-		emailTxt = c.getEmail();
-		telephoneTxt = c.getTelephone();
-		noteTxt = c.getNote();
-		
+			nameTxt = c.getName();
+			sectorTxt = c.getSector();
+			emailTxt = c.getEmail();
+			telephoneTxt = c.getTelephone();
+			noteTxt = c.getNote();
+		} else {
+			nameTxt = "";
+			sectorTxt = "";
+			emailTxt = "";
+			telephoneTxt = "";
+			noteTxt = "";
+		}
+
 		emailTxt = emailTxt.replace(".at.", "@");
 		nameTxt = nameTxt.replace("%20", " ");
 		noteTxt = noteTxt.replace("%20", " ");
@@ -197,6 +205,7 @@ public class BrowseContactsActivity extends Activity {
 
 			contactArr
 					.add(new Contact(id, name, sector, email, telephone, note));
+			currContact++;
 			setCurrContact();
 		}
 	}
