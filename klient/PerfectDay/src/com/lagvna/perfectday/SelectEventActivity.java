@@ -55,6 +55,8 @@ public class SelectEventActivity extends ListActivity {
 
 		new GetAllEventsTask(this).execute();
 
+		DataHelper.getInstance().setIsOrganizer(true);
+
 		CustomRow_data = new ArrayList<CustomRow>();
 
 		adapter = new ListViewAdapter(this, R.layout.element, CustomRow_data);

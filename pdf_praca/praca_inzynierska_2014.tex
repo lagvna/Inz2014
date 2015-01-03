@@ -10,7 +10,7 @@
 \usepackage{url}
 %\usepackage{longtable}
 \usepackage[figuresright]{rotating}
-
+\usepackage{bigfoot}
 \usepackage[titletoc,page]{appendix}
 \usepackage{polski}
 \usepackage[utf8]{inputenc}
@@ -63,6 +63,10 @@
 			tabsize=2}
 
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\renewcommand*{\listalgorithmcfname}{Lista algorytmów}
+\renewcommand*{\algorithmcfname}{Algorytm}
+\renewcommand*{\algorithmautorefname}{Algorytm}
 
 \vfuzz2pt % Don't report over-full v-boxes if over-edge is small
 \hfuzz2pt % Don't report over-full h-boxes if over-edge is small
@@ -274,7 +278,7 @@ Jak już wspomnieliśmy wcześniej aplikacja mobilna dedykowana jest systemowi o
 systemu Android wspomnimy w rozdziale dedykowanym opisom technologii. Na tym etapie o Aktywności należy myśleć jako o pojedynczym widoku w aplikacji smartfonowej, który posiada pewne funkcjonalności
 pozwalające użytkownikowi na interakcje z aplikacją.
 
-Jednym z kluczowych celów opisywanego systemu było to, żeby aplikacja mobilna miała przyjazny interfejs użytkownika. Stąd też projektując systemu chcielibyśmy, aby miał on ``płytki'' charakter.
+Jednym z kluczowych celów opisywanego systemu było to, żeby aplikacja mobilna miała przyjazny interfejs użytkownika. Stąd też projektując system chcielibyśmy, aby miał on ``płytki'' charakter.
 Mamy tu na myśli, że nie trzeba przejść wielu Aktywności, aby dojść do najbardziej zagnieżdżonej funkcjonalności aplikacji.
 
 \begin{figure}
@@ -285,7 +289,7 @@ Mamy tu na myśli, że nie trzeba przejść wielu Aktywności, aby dojść do na
 \end{center}
 \end{figure}
 
-Można to przeanalizować bardziej szczegółowo, spoglądając na Rysunek~\ref{fig:funk}. Aplikacja ma sześć poziomów zagnieżdżenia. Oznacza to, że należy dokonać co najwyżej 5 dotknięć ekranu 
+Można to przeanalizować bardziej szczegółowo, spoglądając na rysunek~\ref{fig:funk}. Aplikacja ma sześć poziomów zagnieżdżenia. Oznacza to, że należy dokonać co najwyżej 5 dotknięć ekranu 
 (włącznie z uruchomieniem) i co najwyżej trzech przesunięć palcem po ekranie, aby dojść do dowolnej funkcjonalności. Poziom nr 3 oznaczyliśmy gwiazdką, ponieważ zależy ona od aktora.
 W przypadku gdy użytkownik jest organizatorem, to być może organizuje kilka wydarzeń jednocześnie, stąd należało przewidzieć wybór, administracji którego chce się aktualnie podjąć.
 Dla gościa poziom ten nie jest wymagany, ponieważ wydarzenia są jednoznacznie identyfikowane kodem dostępu. Wobec czego podając otrzymany od organizatora ciąg alfanumeryczny system
@@ -407,8 +411,8 @@ Jak widać chodzi nam przede wszystkim o to, aby serwer działał w prosty spos�
 \end{itemize}
 
 W związku z tym w projektowanym systemie zdecydowaliśmy się wykorzystać istniejące rozwiązanie jakim jest wysokopoziomowy framework przeznaczony do tworzenia aplikacji internetowych napisanym w Pythonie,
-czyli Django. Szerzej narzędzie to opiszemy w odpowiednim rozdziale. Niemniej na tym etapie należy wspomnieć, że Django opiera się na wzorcu projektowym podobnym do Model-View-Controller,
-dzięki czemu charakteryzuje się bardzo modułowym sposobem tworzenia aplikacji.
+czyli Django\footnote{\verb|https://www.djangoproject.com/|}. Szerzej narzędzie to opiszemy w odpowiednim rozdziale. Niemniej na tym etapie należy wspomnieć, że Django opiera się na 
+wzorcu projektowym Model-View-Template\footnote{\verb|https://docs.djangoproject.com/en/1.7/faq/general/|}, dzięki czemu charakteryzuje się bardzo modułowym sposobem tworzenia aplikacji.
 W momencie kiedy mamy już model (czyli tak naprawdę tabelę bazy danych), wystarczy napisać odpowiedni widok, który jest pewnego rodzaju funkcją uruchamianą po nadejściu zapytania od klienta.
 Funkcja ta wyciąga zadane informacje z bazy danych, następnie opakowuje do uzgodnionego formatu i odsyła klientowi. Dzięki temu chcąc nadać systemowi nową funkcjonalność nie ma konieczności
 ingerowania w już istniejące. Poza tym Django, jako narzędzie cały czas rozwijane cechuje się wysoką wydajnością, bezpieczeństwem, a także wygodą użytkowania. Django generuje automatycznie panel
@@ -425,14 +429,14 @@ Skrypty tworzące bazę danych leżą po stronie mechanizmów framework'u, oraz 
 
 \begin{figure}[htb]
 \begin{center}
- \includegraphics[scale=0.45]{/home/lagvna/Dokumenty/inz_gfx/dbpart.png}
+ \includegraphics[scale=0.42]{/home/lagvna/Dokumenty/inz_gfx/dbpart.png}
  \caption{Diagram przedstawiający schemat bazy danych serwera}
  \label{fig:dbpart}
 \end{center}
 \end{figure}
 \newpage
 W tym podrozdziale zajmiemy się dokładniejszym omówieniem bazy danych, w ujęciu funkcjonalności systemu oraz potrzeby silnej jej integracji z serwerem, o czym wspominaliśmy w poprzednich częściach
-pracy. Z tego też względu, dla ustalenia uwagi, rozpoczęliśmy od Rysunku~\ref{fig:dbpart}, do którego będziemy się odwoływać.
+pracy. Z tego też względu, dla ustalenia uwagi, rozpoczęliśmy od rysunku~\ref{fig:dbpart}, do którego będziemy się odwoływać.
 
 Zaprojektowane przez nas w bazie danych tabele dotyczą:
 
@@ -443,14 +447,13 @@ Zaprojektowane przez nas w bazie danych tabele dotyczą:
  \item Tablicy dyskusyjnej (\textbf{pdapp\_wall})
  \item Odpowiedzi w wątku tablicy dyskusyjnej (\textbf{pdapp\_response})
  \item Spraw do załatwienia (\textbf{pdapp\_appointment})
- \item Prezentu (\textbf{pdapp\_gift})
- \item Przedmiotu (\textbf{pdapp\_item})
+ \item Prezentu/Przedmiotu (\textbf{pdapp\_gift})
 \end{enumerate}
 
-Oprócz powyższych mamy jeszcze tabelę \textbf{auth\_user}. Jest to tabela generowana przez mechanizm uwierzytelniania użytkowników przez serwer. Jednak umieściliśmy ją na Rysunku~\ref{fig:dbpart}, dla pełniejszego
-zrozumienia kompozycji bazy danych.
+Oprócz powyższych mamy jeszcze tabelę \textbf{auth\_user}. Jest to tabela generowana przez mechanizm uwierzytelniania użytkowników przez serwer. Jednak umieściliśmy ją na Rysunku~\ref{fig:dbpart}, 
+dla pełniejszego zrozumienia kompozycji bazy danych.
 Ponadto w Dodatku~\ref{sec:dball} zaprezentowano cały schemat bazy danych jakim posługuje się serwer. Tabele te są wynikiem wbudowanego w serwer Django mechanizmu uwierzytelniania i autoryzacji, a także
-obsługi logowania za pomocą kont społecznościowych przez wtyczkę Allauth.
+obsługi logowania za pomocą kont społecznościowych przez wtyczkę Allauth\footnote{\verb|http://www.intenct.nl/projects/django-allauth/|}.
 
 Omówimy teraz pokrótce wypunktowane tabele:
 
@@ -461,8 +464,7 @@ Omówimy teraz pokrótce wypunktowane tabele:
  \item[Ad 4.] Tablica dyskusyjna to tzw. wpisy główne. Przyrównując do forum, powiedzielibyśmy, że to wątki.
  \item[Ad 5.] Celem tej tabeli jest przypisanie odpowiedzi w dyskusji do wątków.
  \item[Ad 6.] Sprawy do załatwienia opisują wspomniane w podrozdziale o funkcjonalnościach aplikacji mobilnej notatki organizatora.
- \item[Ad 7.] Rekordy systemu zapisów na prezenty (wydarzenie formalne).
- \item[Ad 8.] Rekordy systemu zapisów na przedmioty (wydarzenie nieformalne).
+ \item[Ad 7.] Rekordy systemu zapisów na prezenty/przedmioty (odpowiednio: wydarzenie formalne/nieformalne).
 \end{itemize}
 
 Całość pozwala obsłużyć wszystkie zaprojektowane dla aplikacji klienckich funkcjonalności. Dodatkowo baza danych zachowuje przy takiej budowie prostotę oraz możliwość dalszej rozbudowy
@@ -486,23 +488,212 @@ w kodzie słów kluczowych (specjalnie dla niego przewidzianych), wyświetlając
 To kolejna zaleta stosowanego rozwiązania, ponieważ pozwala stworzyć dynamiczny serwis internetowy przy oszczędności nakładów pracy i dba za nas o komunikację, gdyż jest to część serwera.
 
 \subsection{Opis algorytmu generowania losowego, unikalnego kodu}
-Algorytm generowania losowego, unikalnego kodu i jak to sie dzieje w aplikacji, python, skrypt, wysyłka, zapisanie w bazie
-\newpage
-\section{Implementacja sytemu}
+Bardzo ważnym aspektem implementowanego systemu jest generowanie losowego, unikalnego ciągu alfanumerycznego. Jest to o tyle istotne, że projekt zakłada, iż każde wydarzenie jest jednoznacznie
+skorelowane z takim kodem. Dzięki temu osoba, która otrzyma kod od organizatora loguje się za pomocą aplikacji klienckiej tylko i wyłącznie przy jego użyciu. Takie podejście jest wygodne,
+ale i zarazem stanowi pewne wyzwanie projektowe.
 
+Przeanalizujmy wobec tego możliwe podejścia:
+
+\begin{itemize}
+ \item Załóżmy, że chcemy wygenerować kod pięcioznakowy, który posiada dwie cyfry, oraz trzy litery. Jednym z podejść jest wylosowanie niezależnie cyfr i liter, a następnie ustalenie
+ (również w drodze losowania), na której pozycji powinny znaleźć się poszczególne typy znaków. Następnym krokiem jest sprawdzenie czy w bazie danych istnieje już wylosowany kod. W przypadku
+ duplikatu procedurę powtarzamy.
+ 
+ \item Kolejny pomysł polega na koncepcji wygenerowania wszystkich możliwych kodów pięcioznakowych i trzymanie ich np. w jakimś pliku. Teraz wystarczyłoby już tylko w trybie krokowym
+ uruchomić algorytm permutacji Fischer-Yate's:
+ 
+ {\small
+\begin{algorithm}[H]
+%\SetAlTitleFnt{small}
+\SetArgSty{normalfont}
+\SetKwInOut{Input}{Wejście}
+\SetKwInOut{Output}{Wyjście}
+\Input{Tablica kodów K}
+\For{$i \leftarrow |K|$ \KwTo $1$}{
+$j \leftarrow $ losowa liczba naturalna taka, że $0 \leqslant j \leqslant i$; \
+
+$ swap(K[i], K[j])$;}
+\caption{Algorytm permutacji Fischer-Yate's}\label{alg:fyp}
+\end{algorithm}
+}
+
+Oznacza to mniej więcej tyle, że w każdym kolejnym kroku pozycja, na którą aktualnie wskazuje zmienna iterująca jest już ustawiona i to ją możemy przypisać nowoutworzonemu wydarzeniu.
+
+\item Ostatnim pomysłem jest użycie symetrycznego szyfru blokowego np. DES i, przy jednakowym kluczu, szyfrowanie kolejnych liczb naturalnych, rozpoczynając od danej wartości.
+
+\end{itemize}
+
+Ostatnie podejście wydaje się być dobrym, jeśli mamy dużą dziedzinę i potrzebujemy bardzo wielu kodów. Trzeba jednak wziąć pod uwagę, że rozwiązanie to mogłoby zacząć przynosić duplikaty
+kodów, w momencie gdy przekroczymy pewien próg szyfrowanych wartości, przy założeniu o pięcioznakowości kodów.
+
+Permutacja Fischer-Yate's jest bardzo dobrym rozwiązaniem w przypadku gdy żądamy wielkiej ilości kodów przy małej mocy zbioru argumentów. Kłopotliwym jednak wydaje się być konieczność posiadania
+pewnej bazy kodów od samego początku.
+
+Pierwsze podejście jest optymalne dla stosunkowo niewielkiej liczby kodów z dużej dziedziny. W naszym przypadku (2 cyfry, 3 litery i losowe ich ustawienie) zbiór argumentów liczy:
+$ \binom{5}{2} \cdot 10 \cdot 10 \cdot 26 \cdot 26 \cdot 26 \approx 17,5$ mln elementów. Oznacza to, że prawdopodobieństwo powtórzenia jest małe, nawet jeśli wykorzystamy już setki tysięcy kodów. Niemniej jednak
+w razie takiej sytuacji mamy zabezpieczenie w postaci powtórnego losowania. Ponadto mechanizm ten jest prosty w implementacji oraz nie ma potrzeby ustalania kluczy, generowania plików itp.
+Biorąc pod uwagę wszystkie argumenty zdecydowaliśmy się wykorzystać w systemie właśnie takie podejście.
+
+% moze tutaj jeszcze dodac listing jak to robie? jak bede mial :p
+\newpage
+\section{Implementacja sytemu} 
+W tym rozdziale zaprezentujemy technologie, jakie zostały użyte w systemie. Omówimy czym się charakteryzują oraz w jaki sposób działają. Oprócz tego powiemy co sprawiło trudności 
+w implementacji systemu, a jakie decyzje (podjęte jeszcze w fazie projektu) pozwoliły uzyskać zadowalający efekt prosto i szybko.
 \subsection{Opis technologii}
 \subsubsection{Aplikacja mobilna}
+Jak już wspomnieliśmy wcześniej aplikacja mobilna dedykowana jest systemowi operacyjnemu Android. Platformą docelową są więc nowoczesne smartfony.
+Oprogramowanie dla takich urządzeń pisze się w języku JAVA, jednak Android oferuje bardzo bogate biblioteki, które pozwalają na interakcje z urządzeniem docelowym.
+
+Technologia ta cechuje się rozdzieleniem graficznego interfejsu użytkownika, zasobów oraz logiki aplikacji. Dwa pierwsze pisze się za pomocą struktury XML w odpowiednich plikach.
+Następnie pliki te ``podpina'' się do części logicznej aplikacji (pisanej, jak już wspomnieliśmy, w języku JAVA) za pomocą odpowiednich identyfikatorów i adapterów, wbudowanych w biblioteki Androida.
+Technologia ta jest bardzo wygodna w użyciu, gdyż praca nad aplikacją ma modułowy charakter. Każdy ekran aplikacji to osobna klasa dziedzicząca po tzw. Activity. W niej definiujemy akcje podejmowane
+po naciśnięciu odpowiednich elementów interfejsu, lub po wprowadzeniu danych.
+
+Warto jeszcze wspomnieć, że Android oferuje wtyczki do takich środowisk programistycznych jak Eclipse. Posiada także emulator, dzięki czemu nie jest konieczne posiadanie fizycznego urządzenia, aby
+rozwijać oprogramowanie.
 \subsubsection{Aplikacja internetowa}
+Rozwijanie atrakcyjnych aplikacji internetowych wymaga wiedzy i doświadczenia, niemniej jednak kluczem do sukcesu jest talent i pewien zmysł estetyczny. Na szczęście istnieją bardzo wygodne narzędzia,
+pozwalające w prosty sposób wykonać jak najatrakcyjniejszy produkt. W naszym projekcie skorzystaliśmy Bootsrap.
+
+Jest to framework twórców Twittera, który w istocie tworzy zbiór gotowych rozwiązań HTML i CSS stanowiących elementy do budowy całości strony. Dzięki temu komponując poszczególne składowe ze sobą,
+jesteśmy w stanie:
+
+\begin{itemize}
+ \item stworzyć responsywny serwis internetowy, czyli taki, który zapewni optymalny wygląd strony niezależnie od rozdzielczości i innych parametrów,
+ \item skorzystać z wielu komponentów, dzięki czemu nie musimy samodzielnie pisać formularzy czy ramek,
+ \item wykonać strony, które równie dobrze wyglądają w przeglądarce komputera osobistego, jak i na ekranie smartfona czy tabletu.
+\end{itemize}
+
+Myśląc o komercyjnym wykorzystaniu projektu skorzystanie z Bootstrap, oprócz oczywistego ułatwienia pracy nad projektem, pozwola na proste dokonywanie zmian, 
+czy też zmianę szablonów stron.
 \subsubsection{Serwer aplikacji}
+W rozdziale dotyczącym projektu systemu wspominaliśmy już, że serwer aplikacji jest oparty o Django. W tym miejscu powiemy jednak nieco szerzej czym cechuje się
+to narzędzie.
+
+Przypomnijmy, że Django to framework służący do tworzenia aplikacji internetowych, który przy pomocy wzorca projektowego Model-View-Template pozwala tworzyć dynamiczne serwisy
+internetowe w bardzo efektywny sposób. Model możemy identyfikować w Django z bazą danych. Niemniej cała obsługa tejże leży po stronie silnika Django, a my definiujemy jedynie
+tabele, ich kolumny oraz wzajemne relacje pomiędzy nimi. 
+
+Mając już model, Django oferuje mechanizm tzw. widoków (View). Widok to swojego rodzaju funkcja, która uruchamiana jest za pomocą
+wejścia pod odpowiedni adres. W funkcji tej można przefiltrować dane z bazy, pod kątem interesujących nas informacji, a następnie wysłać do szablonu (Template). Używany do pisania wspomnianych widoków
+język to Python. Warto jeszcze wspomnieć, że zarządzanie adresami podstron jest również w opisywanym framework'u bardzo ułatwione. Wystarczy w odpowiednim pliku zdefiniować nazwę odnośnika 
+i zadeklarować jaki widok uruchamia.
+
+Szablony w Django (Template) to tak naprawdę pliki HTML, które pozwalają na wstawianie specjalnego kodu źródłowego, dzięki czemu dane wyfiltrowane w widoku można umieścić w żądanym miejscu.
+To pozwala na tworzenie dynamicznej zawartości, a przy tym nie wymaga od nas rozbudowywania serwisu o dziesiątki dodatkowych plików.
+
+Przypomnijmy, że w naszym systemie komunikacja z aplikacją mobilną odbywa się przy pomocy obiektów typu JSON. W Django do tworzenia widoków używamy Python'a, wobec czego mamy dostęp do bibliotek
+jakie język ten oferuje. Stąd bardzo łatwo jest użyć Django na różnych platformach, bo mamy dostęp do narzędzi, które tworzą i parsują JSON'y.
 \subsection{Szczegóły implementacyjne}
 
+
+W początkowej fazie problematycznym wyzwaniem była implementacja uwierzytelniania użytkowników za pomocą konta Facebook. Wprawdzie istnieje wiele wtyczek dla Django, które oferują taką funkcjonalność,
+niemniej jednak wiele z nich żąda od użytkownika informacji prywatnych z Facebook'a. Z tego względu użytkownik z nieprawidłowymi względem wtyczki ustawieniami konta nie miałby możliwości autoryzacji.
+Ostatecznie dobrym rozwiązaniem okazała się wtyczka Allauth, jednak dokumentacja tego narzędzia jest bardzo skromna i pojawiły się problemy z jego integracją z projektem serwera.
+\begin{figure}[htb]
+ \begin{center}
+ \includegraphics[scale=0.4]{/home/lagvna/Dokumenty/inz_gfx/logo.png}
+ \caption{Logo stworzonego systemu}
+ \label{fig:logo}
+ \end{center}
+\end{figure}
+
+Pomijając jednak te początkowe trudności wybór Django jako serwera systemu okazał się świetnym rozwiązaniem, bowiem prostota jego użycia skróciła znacznie implementację. Dodatkowo wzorzec
+projektowy jakim się posługuje pozwolił na wykonanie centralnego serwera, który obsługuje zarówno aplikację internetową, jak i tę mobilną. Ponadto w przypadku konieczności nadania nowych
+funkcjonalności systemowi, to właśnie serwer będzie wymagał najmniej zmian.
+
+Użycie Bootstrap'a okazało się również trafnym wyborem, ponieważ końcowy efekt cechuje się schludnym i funkcjonalnym szablonem, a wraz z użyciem Django okazał się nie wymagać wielkich nakładów
+czasowych.
+
+Najwięcej pracy wymagała implementacja aplikacji mobilnej. Należało ręcznie napisać wiele widoków oraz całą logikę programu. Ponadto aplikacja nieustannie komunikuje się z serwerem, 
+więc należało zaimplementować porozumiewanie się modułów za pomocą zdarzeń asynchronicznych, których w kodzie źródłowym można znaleźć wiele. Stanowiło to trudność wymagającą dobrego zrozumienia
+jak wygląda cykl komunikacyjny, oraz synchronizacji wątków pomiędzy sobą.
+
+Konkludując należy jednak uznać, że wynikiem pracy jest sukces implementacyjny, a stworzone oprogramowanie działa bez zarzutów oraz spełnia wymagania funkcjonalne, oraz cele wyznaczone w fazie projektowej.
 \newpage
-\section{Instalacja i wdrożenie systemu}
+\section{Instalacja systemu}
+W rozdziale tym opiszemy wymagania co do środowiska oraz instrukcję jak uruchomić projekt załączony do ninejszej pracy na płycie, w celu testowania.
+Warto odnieść się przy tej okazji do Dodatku~\ref{sec:cd}, który zawiera opis zawartości płyty.
+
+Rozpoczniemy od wymagań dotyczących środowiska uruchomieniowego:
+
+\begin{itemize}
+ \item System operacyjny Linux,
+ \item Środowisko Java SE Development Kit 8
+ \item Zintegrowane środowisko programistyczne Eclipse, wydanie Luna,
+ \item Wtyczka Android SDK Tools w wersji 23.0.5 dla Eclipse,
+ \item Framework Bootstrap,
+ \item Telefon z systemem Android w wersji $\geqslant$ 4.0 lub odpowiednia maszyna wirtualna Android,
+ \item Aktywne konto na portalu społecznościowym Facebook.
+\end{itemize}
+
+Po spełnieniu powyższych wymagań możemy przejść do opisu sposobu uruchomienia poszczególnych komponentów:
+
+\begin{enumerate}
+ \item \textbf{Serwer dewelopersji Django, wraz ze stroną internetową:}
+ \\Po rozpakowaniu pliku \verb|serwer.zip| w dogodnym miejscu na dysku komputera, należy uruchomić terminal i przejść do katalogu \verb|serwer/PerfectDay/|, w którym znajduje się projekt serwera.
+ Teraz należy użyć komendy:
+ \begin{center}
+  \verb|$python manage.py runserver|
+ \end{center}
+Po tej operacji można już swobodnie rozpocząć korzystanie ze strony internetowej aplikacji.
+W tym celu należy uruchomić przeglądarkę internetową i odwiedzić za jej pomocą adres: \verb|http://127.0.0.1:8000|.
+\newpage
+\item \textbf{Aplikacja mobilna:}
+\begin{beamerlikethm}{Uwagi!}
+W celu sprawnego testowania aplikacji mobilnej należy uruchomić serwer deweloperski Django (patrz krok 1.).
+\\Przed przystąpieniem do konfiguracji należy poznać adres IP komputera, na którym uruchomiony jest serwer. Jeśli telefon działa w tej samej sieci, co serwer wystarczy wewnętrzny adres.
+W przypadku różnych sieci, potrzebować będziemy zewnętrznego adresu IP.
+\\Ponadto należy zadbać o odblokowanie portu 8000 (router, firewall itp.).
+\end{beamerlikethm}
+
+\begin{itemize}
+ \item Po rozpakowaniu pliku \verb|klient.zip| w dogodnym miejscu na dysku komputera należy uruchomić środowisko Eclipse ze skonfigurowaną wtyczką Android SDK.
+Następnie należy kliknąć \verb|File->Import...|, a następnie wybrać \verb|Existing Android Code Into Workspace|. Dalej wystarczy kliknąć \verb|Browse| w górnej części okienka i wskazać ścieżkę, 
+w które znajduje się projekt tj. \verb|klient/PerfectDay|. Następnie musimy zatwierdzić wybór i kliknąć \verb|Finish| w dolnej części okna.
+\item Po tej operacji należy w środowisku Eclipse i zaimportowanym projekcie odszukać plik \verb|LoginActivity.java|, w którym potrzeba zedytować linię metody \verb|OnCreate|
+otoczoną czerwoną ramką na rysunku~\ref{fig:ip}
+\begin{figure}[htb]
+\begin{center}
+ \includegraphics[scale=0.6]{/home/lagvna/Dokumenty/inz_gfx/ipconfig.png}
+ \caption{Linia, w której edytujemy IP serwera, do którego łączy się aplikacja}
+ \label{fig:ip}
+ \end{center}
+\end{figure}
+
+Należy w tym miejscu podać adres IP serwera, pod którym działa serwer deweloperski Django.
+
+\item Po pomyślnej edycji adresu IP należy zapisać plik i skompilować projekt, uruchamiając go na smartfonie lub w maszynie wirtualnej Androida.
+\end{itemize}
+
+\end{enumerate}
+
 
 \newpage
 \section*{Podsumowanie}
+Chcąc podsumować ninejszą pracę, a także omawiany w niej system należy wyjść od faktu, że udało się spełnić zakładane w fazie projektowej funkcjonalności i cele.
+To, co zasługuje na szczególną uwagę to:
+\begin{itemize}
+ \item serwer, który obsługuje aplikację mobilną i internetową jednocześnie,
+ \item aplikacja kliencka, posiadająca ``płytki'' interfejs użytkownika (dostęp do każdej funkcjonalności aplikacji),
+ \item utożsamienie wydarzenia z unikalnym, losowym kodem, dzięki czemu nie jest konieczne wpisywanie dużych ilości informacji, aby się zalogować,
+ \item praktyczne wykorzystanie i integracja technologii i rozwiązań wysokiego poziomu (Android, Bootstrap, Django, Facebook).
+\end{itemize}
+To wszystko czyni, że system jest nie tylko ukończony, ale i przygotowany do uruchomienia w szerszej społeczności. Przy tej okazji warto podkreślić fakt, że oprogramowanie
+wymaga pewnego rodzaju pielęgnacji. Mowa tu o usuwaniu starych wydarzeń, co pozwoli na rzadsze pojawianie się duplikatów podczas generowania kodu wydarzenia.
+Alternatywnie można z góry ustalić, jakie wydarzenia kwalifikujemy jako stare i rozwinąć serwer o mechanizm, który będzie to robić automatycznie.
 
+Mimo, że opisywany w pracy system jest kompletnym produktem, to myśląc o komercyjnym wdrożeniu, warto byłoby pomyśleć o dalszych kierunkach jego rozwoju:
+\begin{itemize}
+ \item przede wszystkim należałoby udostępnić możliwość logowania przy pomocy innych niż Facebook kont społecznościowych (Google+, Twitter etc.),
+ \item wartym przemyślenia jest dodanie trzeciego aktora w systemie (firma), a zarazem bazy ogłoszeń, z których organizatorzy mogliby skorzystać,
+ \item ciekawym elementem byłaby także możliwość kontaktu z gośćmi spośród znajomych na Facebook'u, aby poźniej móc automatycznie rozesłać kody wydarzenia.
+\end{itemize}
+Dalszy rozwój oprogramowania to temat, który można rozważać jeszcze długo, ale tego typu przemyślenia wymagałyby zbadania oczekiwań użytkowników względem aplikacji.
 
+Na chwilę obecną należy jednak podkreślić przede wszystkim fakt, że implementacja zarówno części serwerowej, jak i aplikacji klienckich została zakończona powodzeniem. 
+Ponadto oba komponenty pozwalają na dalszy rozwój systemu o nowe funkcjonalności, bez konieczności głębokiej ingerencji w dotychczasowe kody źródłowe, a stworzony produkt
+jest atrakcyjnym i praktycznym narzędziem, które wypełnia pewną niszę w dziedzinie aplikacji wspomagających ludzkie działania planistyczne
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BIBLIOGRAFIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -513,6 +704,18 @@ Algorytm generowania losowego, unikalnego kodu i jak to sie dzieje w aplikacji, 
 \newpage
 \begin{appendices}
 \section{Opis płyty}
+\label{sec:cd}
+Stworzony projekt został dołączony na płycie CD do niniejszej pracy. Omówimy zatem krótko jej zawartość.
+
+Po włożeniu płyty można ujrzeć trzy archiwa w formacie \verb|zip|:
+\begin{itemize}
+ \item \verb|klient.zip| to plik, który po rozpakowaniu zawiera kompletny projekt aplikacji mobilnej dla systemu Android. Po jego rozpakowaniu można projekt z powodzeniem zaimportować
+ do programu Eclipse, lub też oglądać zawartość w przeglądarce systemu.
+ \item \verb|serwer.zip| to archiwum, które zawiera projekt serwera w Django, wraz ze stroną internetową, będącą integralną częścią serwera. Tzw. serwer deweloperski, dla potrzeb testowych, można uruchomić
+ z poziomu wypakowanego archiwum w konsoli Linux'a.
+ \item \verb|praca_pdf.zip| to plik, w którym spakowana została ninejsza praca w formacie \verb|pdf|.
+\end{itemize}
+
 \newpage
  \section{Pełny schemat bazy danych}
  \label{sec:dball}

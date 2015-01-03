@@ -12,6 +12,7 @@ public class DataHelper {
 	private String serverUrl;
 	private String login;
 	private String eventId;
+	private Boolean isOrganizer = false;
 
 	private static final DataHelper dh = new DataHelper();
 
@@ -23,13 +24,13 @@ public class DataHelper {
 		return client;
 	}
 
-	public void setCookies(String[] tmp)	{
-		for(int i = 0; i < tmp.length; i++)	{
-			if(tmp[i].startsWith("sessionid"))	{
+	public void setCookies(String[] tmp) {
+		for (int i = 0; i < tmp.length; i++) {
+			if (tmp[i].startsWith("sessionid")) {
 				setSession(tmp[i]);
-			} else if(tmp[i].startsWith("messages"))	{
+			} else if (tmp[i].startsWith("messages")) {
 				setMessage(tmp[i]);
-			} else	{
+			} else {
 				setCrsfToken(tmp[i]);
 			}
 		}
@@ -93,5 +94,13 @@ public class DataHelper {
 
 	public void setEventId(String eventId) {
 		this.eventId = eventId;
+	}
+
+	public Boolean getIsOrganizer() {
+		return isOrganizer;
+	}
+
+	public void setIsOrganizer(Boolean isOrganizer) {
+		this.isOrganizer = isOrganizer;
 	}
 }

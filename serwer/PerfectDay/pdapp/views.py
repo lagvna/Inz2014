@@ -2,6 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 import django.utils.simplejson as json
+from pip import req
 from allauth.socialaccount import providers
 from allauth.socialaccount.models import SocialLogin, SocialToken, SocialApp
 from allauth.socialaccount.providers.facebook.views import fb_complete_login
@@ -12,6 +13,68 @@ from pdapp.models import *
 
 def index(request):
     return render_to_response("pdapp/index.html", RequestContext(request))
+
+
+def android_getallgifts(request):
+    print(request.COOKIES)
+    response_data = {}
+    response_gifts = []
+    if (request.user.is_authenticated()):
+        tmpEvent = Event.objects.filter(id = request.GET['eventid'])
+        tmpGift = Gift.objects.filter(event = tmpEvent)
+        for a in tmpGift:
+            aName = a.name
+            aLink = a.link
+            aShop = a.shop
+            aDescription = a.description
+            aBuyer = a.buyer
+            aId = a.id
+            record = {'name': aName, 'link': aLink, 'shop': aShop, 'description': aDescription, 'buyer': aBuyer, 'id': aId}
+            print record
+            response_gifts.append(record)
+
+        response_data['gifts'] = response_gifts
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie pobrano wszystkie pozycje'
+
+        print('okej')
+        user = request.user
+        print(user.id)
+        print(request.session.session_key)
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        print('zle')
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+@csrf_exempt
+def android_addgift(request):
+    print(request.COOKIES)
+    response_data = {}
+    if (request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['eventid'])
+        tmpEvent = Event.objects.get(id=tmpId)
+
+        print('okej')
+        print(user.id)
+        print(request.session.session_key)
+        new_gift = Gift(name=request.GET['name'], link=request.GET['link'], shop=request.GET['shop'],
+                        description=request.GET['description'], event=tmpEvent, buyer=request.GET['buyer'])
+        new_gift.save()
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie dodano pozycje'
+        response_data['name'] = new_gift.name
+        response_data['link'] = new_gift.link
+        response_data['shop'] = new_gift.shop
+        response_data['description'] = new_gift.description
+        response_data['buyer'] = new_gift.buyer
+        response_data['id'] = new_gift.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
 
 
 @csrf_exempt
@@ -180,6 +243,10 @@ def android_remove(request):
             tmpId = int(request.GET['id'])
             Appointment.objects.filter(id=tmpId).delete()
             response_data['message'] = 'Pomyslnie usunieto notatke'
+        if (request.GET['type'] == 'gift'):
+            tmpId = int(request.GET['id'])
+            Gift.objects.filter(id=tmpId).delete()
+            response_data['message'] = 'Pomyslnie usunieto pozycje'
 
         response_data['result'] = 'success'
 

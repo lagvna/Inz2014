@@ -16,4 +16,6 @@ urlpatterns = patterns('',
     url(r'^getallcontacts/', views.android_getallcontacts, name = 'getallcontacts'),
     url(r'^addnote/', views.android_addnote, name = 'addnote'),
     url(r'^getallnotes/', views.android_getallnotes, name = 'getallnotes'),
+    url(r'^addgift/', views.android_addgift, name = 'addgift'),
+    url(r'^getallgifts/', views.android_getallgifts, name = 'getallgifts'),
 )

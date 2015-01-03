@@ -38,13 +38,7 @@ class Gift(models.Model):
     shop = models.CharField(max_length = 500)
     description = models.CharField(max_length = 500)
     event = models.ForeignKey(Event)
-    guest = models.ForeignKey(Guest)
-
-class Item(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.CharField(max_length = 500)
-    event = models.ForeignKey(Event)
-    guest = models.ForeignKey(Guest)
+    buyer = models.CharField(max_length=200)
 
 class Wall(models.Model):
     author = models.CharField(max_length = 200)

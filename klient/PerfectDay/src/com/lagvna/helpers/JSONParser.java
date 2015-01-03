@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.lagvna.customtypes.Contact;
 import com.lagvna.customtypes.Event;
+import com.lagvna.customtypes.Gift;
 import com.lagvna.customtypes.Guest;
 import com.lagvna.customtypes.Note;
 
@@ -18,6 +19,7 @@ public class JSONParser {
 	private ArrayList<Guest> guestArray = new ArrayList<Guest>();
 	private ArrayList<Contact> contactArray = new ArrayList<Contact>();
 	private ArrayList<Note> notesArray = new ArrayList<Note>();
+	private ArrayList<Gift> giftsArray = new ArrayList<Gift>();
 
 	public JSONParser(String inputStream) {
 
@@ -189,6 +191,45 @@ public class JSONParser {
 		resultArray.add(jo.getString("id"));
 
 		return resultArray;
+	}
+
+	public ArrayList<String> getAddGiftTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("name"));
+		resultArray.add(jo.getString("shop"));
+		resultArray.add(jo.getString("link"));
+		resultArray.add(jo.getString("description"));
+		resultArray.add(jo.getString("buyer"));
+		resultArray.add(jo.getString("id"));
+
+		return resultArray;
+	}
+
+	public ArrayList<String> getGetAllGiftsTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.get("gifts").toString());
+
+		return resultArray;
+	}
+
+	public ArrayList<Gift> getGifts(String gifts) throws JSONException {
+		JSONArray ja = new JSONArray(gifts);
+
+		for (int i = 0; i < ja.length(); i++) {
+			JSONObject jo = new JSONObject();
+			jo = ja.getJSONObject(i);
+			giftsArray.add(new Gift(jo.getString("name"), jo.getString("link"),
+					jo.getString("shop"), jo.getString("description"), jo
+							.getString("buyer"), jo.getString("id")));
+		}
+
+		return giftsArray;
 	}
 
 	public ArrayList<String> getRemoveSthTaskResult() throws JSONException {

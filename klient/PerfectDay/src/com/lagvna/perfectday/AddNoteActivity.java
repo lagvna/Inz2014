@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,9 @@ public class AddNoteActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_add_note);
 
 		note = (EditText) findViewById(R.id.noteText);
@@ -40,7 +45,7 @@ public class AddNoteActivity extends Activity {
 					System.err.println(noteTxt);
 					processInput();
 					addNote();
-				} else	{
+				} else {
 					raiseError("Musisz wpisać jakąś notatkę!");
 				}
 			}

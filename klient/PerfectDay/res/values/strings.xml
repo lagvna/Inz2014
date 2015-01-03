@@ -38,5 +38,7 @@
     </string-array>
 
     <string name="title_activity_add_note">AddNoteActivity</string>
+    <string name="title_activity_add_gift">AddGiftActivity</string>
+    <string name="title_activity_gift_details">GiftDetailsActivity</string>
 
 </resources>

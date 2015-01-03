@@ -9,12 +9,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.lagvna.adapters.TabsPagerAdapter;
+import com.lagvna.customtypes.Gift;
 import com.lagvna.customtypes.Note;
 import com.lagvna.helpers.DataHelper;
+import com.lagvna.tasks.GetAllGiftsTask;
 import com.lagvna.tasks.GetAllNotesTask;
+import com.lagvna.tasks.RemoveGiftTask;
 import com.lagvna.tasks.RemoveNoteTask;
 
 @SuppressWarnings("deprecation")
@@ -22,6 +28,7 @@ public class EventActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
 	public ArrayList<Note> noteArr;
+	public ArrayList<Gift> giftArr;
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	public TabsPagerAdapter mAdapter;
@@ -50,6 +57,7 @@ public class EventActivity extends FragmentActivity implements
 		getExtras();
 
 		getNotes();
+		getGifts();
 
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
@@ -83,8 +91,17 @@ public class EventActivity extends FragmentActivity implements
 		new RemoveNoteTask(this, "note", noteArr.get(d).getId(), d).execute();
 	}
 
+	public void deleteGift(int d) {
+		new RemoveGiftTask(this, "gift", giftArr.get(d).getId(), d).execute();
+	}
+
 	private void getNotes() {
 		new GetAllNotesTask(this, DataHelper.getInstance().getEventId())
+				.execute();
+	}
+
+	private void getGifts() {
+		new GetAllGiftsTask(this, DataHelper.getInstance().getEventId())
 				.execute();
 	}
 
@@ -109,6 +126,10 @@ public class EventActivity extends FragmentActivity implements
 		}
 	}
 
+	public void createGiftList(ArrayList<Gift> giftArr) {
+		this.giftArr = giftArr;
+	}
+
 	private void getExtras() {
 		Bundle extras = getIntent().getExtras();
 		name = extras.getString("name");
@@ -123,6 +144,26 @@ public class EventActivity extends FragmentActivity implements
 		description.replace("_", " ");
 	}
 
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info;
+		
+		try {
+			info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		} catch (ClassCastException e) {
+			Log.e("perfectday", "bad menuInfo", e);
+			return false;
+		}
+
+		int toDel = info.position;
+
+		if (item.getTitle() == "Usuń") {
+			deleteGift(toDel);
+		}
+
+		return false;
+	}
+	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
