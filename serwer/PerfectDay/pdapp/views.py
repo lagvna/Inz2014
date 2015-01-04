@@ -18,6 +18,29 @@ def index(request):
     return render_to_response("pdapp/index.html", RequestContext(request))
 
 
+
+@csrf_exempt
+def android_signupgift(request):
+    print(request.COOKIES)
+    response_data = {}
+    if (request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['id'])
+        tmpGift = Gift.objects.get(id=tmpId)
+
+        tmpGift.buyer = request.GET['buyer']
+        tmpGift.save()
+
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie zapisano na pozycje'
+        response_data['buyer'] = tmpGift.buyer
+        response_data['id'] = tmpGift.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
 @csrf_exempt
 def android_guestlogin(request):
     print(request.COOKIES)

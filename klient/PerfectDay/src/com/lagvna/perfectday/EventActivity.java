@@ -35,7 +35,7 @@ public class EventActivity extends FragmentActivity implements
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	public TabsPagerAdapter mAdapter;
-	private String[] tabs = { "Podsumowanie", "Tablica", "Notatki", "Prezenty" };
+	private String[] tabs = { "Podsumowanie", "Tablica", "Notatki", "Prezenty/Przedmioty" };
 	public String name;
 	public String place;
 	public String date;

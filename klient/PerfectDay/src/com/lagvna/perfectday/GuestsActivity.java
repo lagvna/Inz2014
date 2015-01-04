@@ -88,6 +88,10 @@ public class GuestsActivity extends ListActivity {
 				GuestsActivity.this.startActivityForResult(i, 1);
 			}
 		});
+
+		if (!DataHelper.getInstance().getIsOrganizer()) {
+			addGuest.setEnabled(false);
+		}
 	}
 
 	public void createList(ArrayList<Guest> guestArr) {

@@ -300,7 +300,7 @@ public class JSONParser {
 
 		return wallArray;
 	}
-	
+
 	public ArrayList<String> getGuestLoginTaskResult() throws JSONException {
 		JSONObject jo = new JSONObject(inputStream);
 
@@ -313,6 +313,16 @@ public class JSONParser {
 		resultArray.add(jo.getString("code"));
 		resultArray.add(jo.getString("organizer"));
 		resultArray.add(jo.getString("id"));
+
+		return resultArray;
+	}
+
+	public ArrayList<String> getSignupForGiftTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("buyer"));
 
 		return resultArray;
 	}

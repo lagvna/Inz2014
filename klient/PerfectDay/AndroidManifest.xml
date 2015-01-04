@@ -89,7 +89,8 @@
         </activity>
         <activity
             android:name=".GuestEventActivity"
-            android:label="@string/title_activity_guest_event" >
+            android:label="@string/title_activity_guest_event"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

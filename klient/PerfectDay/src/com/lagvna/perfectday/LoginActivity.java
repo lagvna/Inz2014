@@ -146,6 +146,8 @@ public class LoginActivity extends FragmentActivity {
 		intent.putExtra("code", code);
 		intent.putExtra("organizer", organizer);
 
+		DataHelper.getInstance().setIsOrganizer(false);
+		
 		LoginActivity.this.startActivity(intent);
 
 	}

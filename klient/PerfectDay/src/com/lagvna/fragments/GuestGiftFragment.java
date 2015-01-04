@@ -11,46 +11,40 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.lagvna.adapters.ListViewAdapter;
 import com.lagvna.customtypes.Gift;
 import com.lagvna.lists.CustomRow;
-import com.lagvna.perfectday.AddGiftActivity;
-import com.lagvna.perfectday.EventActivity;
 import com.lagvna.perfectday.GiftDetailsActivity;
+import com.lagvna.perfectday.GuestEventActivity;
 import com.lagvna.perfectday.R;
 
-public class GiftFragment extends Fragment {
+public class GuestGiftFragment extends Fragment {
 	private ArrayList<CustomRow> CustomRow_data;
 	private ListViewAdapter listAdapter;
 	private ListView lv;
-	private Button addGift;
 	private ArrayList<Gift> giftArr;
-	private EventActivity ea;
+	private GuestEventActivity ea;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.fragment_gift, container,
-				false);
+		View rootView = inflater.inflate(R.layout.fragment_guest_gift,
+				container, false);
 
-		ea = (EventActivity) getActivity();
+		ea = (GuestEventActivity) getActivity();
 
 		CustomRow_data = new ArrayList<CustomRow>();
 
 		lv = (ListView) rootView.findViewById(R.id.listGifts);
-		addGift = (Button) rootView.findViewById(R.id.addGift);
 
 		listAdapter = new ListViewAdapter(getActivity(), R.layout.element,
 				CustomRow_data);
 		lv.setAdapter(listAdapter);
-		registerForContextMenu(rootView.findViewById(R.id.listGifts));
 
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -65,16 +59,8 @@ public class GiftFragment extends Fragment {
 						.getDescription());
 				i.putExtra("currentbuyer", giftArr.get(position).getBuyer());
 				i.putExtra("position", position);
-				getActivity().startActivity(i);
-			}
-		});
 
-		addGift.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(getActivity(), AddGiftActivity.class);
-				startActivityForResult(i, 1);
+				getActivity().startActivityForResult(i, 2);
 			}
 		});
 
@@ -87,29 +73,10 @@ public class GiftFragment extends Fragment {
 		giftArr = ea.giftArr;
 		listAdapter.notifyDataSetChanged();
 		CustomRow_data.clear();
-		for (int i = 0; i < giftArr.size(); i++) {
-			String buyer = giftArr.get(i).getBuyer();
-			String name = giftArr.get(i).getName();
+		for (int i = 0; i < ea.giftArr.size(); i++) {
+			String buyer = ea.giftArr.get(i).getBuyer();
+			String name = ea.giftArr.get(i).getName();
 			CustomRow_data.add(new CustomRow(R.drawable.lvsel, name, buyer));
-		}
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		getActivity();
-		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-
-			Bundle extras = data.getExtras();
-			String name = (String) extras.getString("name");
-			String link = (String) extras.getString("link");
-			String shop = (String) extras.getString("shop");
-			String description = (String) extras.getString("description");
-			String buyer = (String) extras.getString("buyer");
-			String id = (String) extras.getString("id");
-
-			ea.giftArr.add(new Gift(name, link, shop, description, buyer, id));
-			createList();
 		}
 	}
 

@@ -23,4 +23,5 @@ urlpatterns = patterns('',
     url(r'^getwall/', views.android_getwall, name = 'getwall'),
     url(r'^gencode/', views.gencode, name = 'gencode'),
     url(r'^guestlogin/', views.android_guestlogin, name = 'guestlogin'),
+    url(r'^signupgift/', views.android_signupgift, name = 'signupgift'),
 )
