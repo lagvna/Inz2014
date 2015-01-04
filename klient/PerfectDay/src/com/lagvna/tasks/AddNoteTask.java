@@ -1,6 +1,8 @@
 package com.lagvna.tasks;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -28,8 +30,17 @@ public class AddNoteTask extends AsyncTask<Void, Void, Void> {
 	public AddNoteTask(AddNoteActivity callingActivity, String note,
 			String eventId) {
 		this.callingActivity = callingActivity;
+
+		try {
+			note = URLEncoder.encode(note, "utf-8");
+			eventId = URLEncoder.encode(eventId, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 		url = DataHelper.getInstance().getServerUrl() + "addnote?note=" + note
 				+ "&eventid=" + eventId;
+
 	}
 
 	@Override

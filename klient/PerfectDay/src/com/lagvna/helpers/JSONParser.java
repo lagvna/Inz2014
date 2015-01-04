@@ -11,6 +11,8 @@ import com.lagvna.customtypes.Event;
 import com.lagvna.customtypes.Gift;
 import com.lagvna.customtypes.Guest;
 import com.lagvna.customtypes.Note;
+import com.lagvna.lists.Response;
+import com.lagvna.lists.Wall;
 
 public class JSONParser {
 	private String inputStream;
@@ -20,6 +22,7 @@ public class JSONParser {
 	private ArrayList<Contact> contactArray = new ArrayList<Contact>();
 	private ArrayList<Note> notesArray = new ArrayList<Note>();
 	private ArrayList<Gift> giftsArray = new ArrayList<Gift>();
+	private ArrayList<Wall> wallArray = new ArrayList<Wall>();
 
 	public JSONParser(String inputStream) {
 
@@ -230,6 +233,88 @@ public class JSONParser {
 		}
 
 		return giftsArray;
+	}
+
+	public ArrayList<String> getAddWallTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("note"));
+		resultArray.add(jo.getString("author"));
+		resultArray.add(jo.getString("date"));
+		resultArray.add(jo.getString("id"));
+
+		return resultArray;
+	}
+
+	public ArrayList<String> getAddResponseTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("note"));
+		resultArray.add(jo.getString("author"));
+		resultArray.add(jo.getString("date"));
+		resultArray.add(jo.getString("wallid"));
+		resultArray.add(jo.getString("id"));
+
+		return resultArray;
+	}
+
+	public ArrayList<String> getGetWallTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.get("wall").toString());
+
+		return resultArray;
+	}
+
+	public ArrayList<Wall> getWall(String wall) throws JSONException {
+		JSONArray ja = new JSONArray(wall);
+
+		for (int i = 0; i < ja.length(); i++) {
+			JSONObject jo = new JSONObject();
+			jo = ja.getJSONObject(i);
+			Wall w = new Wall(jo.getString("id"), jo.getString("note"),
+					jo.getString("author"), jo.getString("date").substring(0,
+							19));
+			JSONArray ja2 = new JSONArray(jo.get("responses").toString());
+			for (int j = 0; j < ja2.length(); j++) {
+				JSONObject jo2 = new JSONObject();
+				jo2 = ja2.getJSONObject(j);
+				Response r = new Response(jo2.getString("id"),
+						jo2.getString("note"), jo2.getString("author"), jo2
+								.getString("date").substring(0, 19),
+						jo2.getString("wallid"));
+				w.getResponses().add(r);
+			}
+			w.getResponses().add(
+					new Response("-1", "---Odpowiedz---", "", "", jo
+							.getString("id")));
+
+			wallArray.add(w);
+		}
+
+		return wallArray;
+	}
+	
+	public ArrayList<String> getGuestLoginTaskResult() throws JSONException {
+		JSONObject jo = new JSONObject(inputStream);
+
+		resultArray.add(jo.getString("result"));
+		resultArray.add(jo.getString("message"));
+		resultArray.add(jo.getString("name"));
+		resultArray.add(jo.getString("place"));
+		resultArray.add(jo.getString("date"));
+		resultArray.add(jo.getString("note"));
+		resultArray.add(jo.getString("code"));
+		resultArray.add(jo.getString("organizer"));
+		resultArray.add(jo.getString("id"));
+
+		return resultArray;
 	}
 
 	public ArrayList<String> getRemoveSthTaskResult() throws JSONException {

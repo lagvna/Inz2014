@@ -117,8 +117,6 @@ public class GuestsActivity extends ListActivity {
 			String telephone = (String) extras.getString("telephone");
 			String id = (String) extras.getString("id");
 
-			System.out.println(name);
-
 			guestArr.add(new Guest(name, surname, email, telephone, id));
 			createList(guestArr);
 		}
@@ -130,14 +128,12 @@ public class GuestsActivity extends ListActivity {
 		Point size = new Point();
 		display.getSize(size);
 
-		// Inflate popup_layout.xml
 		LinearLayout viewGroup = (LinearLayout) context
 				.findViewById(R.id.popup);
 		LayoutInflater layoutInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = layoutInflater.inflate(R.layout.popup_layout, viewGroup);
 
-		// tworzenie PopupWindow
 		final PopupWindow popup = new PopupWindow(context);
 		popup.setContentView(layout);
 		popup.setWidth(LayoutParams.WRAP_CONTENT);
@@ -182,6 +178,7 @@ public class GuestsActivity extends ListActivity {
 		popup.showAtLocation(layout, Gravity.CENTER, 10, 10);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -242,6 +239,6 @@ public class GuestsActivity extends ListActivity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 }

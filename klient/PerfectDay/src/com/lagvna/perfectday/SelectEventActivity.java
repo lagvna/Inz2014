@@ -3,10 +3,8 @@ package com.lagvna.perfectday;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -33,7 +31,6 @@ import com.lagvna.tasks.RemoveEventTask;
 
 public class SelectEventActivity extends ListActivity {
 	private Button addEvent;
-	private AlertDialog.Builder eventTypeDialog;
 	private int eventType;
 	private ArrayList<CustomRow> CustomRow_data;
 	public ArrayList<Event> eventArr;
@@ -90,39 +87,12 @@ public class SelectEventActivity extends ListActivity {
 
 			@Override
 			public void onClick(View v) {
-				eventTypeDialog.show();
+				Intent intent = new Intent(SelectEventActivity.this,
+						UpdateEventActivity.class);
+				intent.putExtra("isNew", true);
+				SelectEventActivity.this.startActivityForResult(intent, 1);
 			}
 		});
-
-		eventTypeDialog = new AlertDialog.Builder(this);
-		eventTypeDialog.setIcon(R.drawable.ic_launcher);
-		eventTypeDialog.setTitle("Typ imprezy");
-		eventTypeDialog.setMessage("Jakie wydarzenie organizujesz?");
-		eventTypeDialog.setPositiveButton("Formalne",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						setEventType(1);
-
-						Intent intent = new Intent(SelectEventActivity.this,
-								UpdateEventActivity.class);
-						intent.putExtra("eventType", eventType);
-						intent.putExtra("isNew", true);
-						SelectEventActivity.this.startActivityForResult(intent,
-								1);
-					}
-				});
-		eventTypeDialog.setNegativeButton("Nieformalne",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						Intent intent = new Intent(SelectEventActivity.this,
-								UpdateEventActivity.class);
-						intent.putExtra("eventType", eventType);
-						intent.putExtra("isNew", true);
-						SelectEventActivity.this.startActivityForResult(intent,
-								1);
-					}
-				});
-
 	}
 
 	public void createList(ArrayList<Event> eventArr) {
@@ -131,18 +101,13 @@ public class SelectEventActivity extends ListActivity {
 		CustomRow_data.clear();
 		for (int i = 0; i < eventArr.size(); i++) {
 			String date = eventArr.get(i).getDate();
-			date.replace("_", " ");
 			String title = eventArr.get(i).getName();
-			title.replace("_", " ");
 			CustomRow_data.add(new CustomRow(R.drawable.lvsel, title, date));
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
-	/**
-	 * Metoda tworzaca menu, pozwalajace po dluzszym kliknieciu w rekord
-	 * na usuniecie nagrania.
-	 */
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -219,8 +184,6 @@ public class SelectEventActivity extends ListActivity {
 			description = (String) extras.getString("description");
 			code = (String) extras.getString("code");
 
-			System.out.println(name);
-
 			Intent intent = new Intent(SelectEventActivity.this,
 					EventActivity.class);
 			intent.putExtra("name", name);
@@ -239,6 +202,6 @@ public class SelectEventActivity extends ListActivity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 }

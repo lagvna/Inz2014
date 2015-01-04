@@ -60,12 +60,8 @@ public class GiftDetailsActivity extends Activity {
 	private void getExtras() {
 		Bundle extras = getIntent().getExtras();
 		nameTxt = extras.getString("name");
-		nameTxt.replace("%20", " ");
 		linkTxt = extras.getString("link");
-		linkTxt.replace("%20", " ");
 		shopTxt = extras.getString("shop");
-		shopTxt.replace("%20", " ");
 		descTxt = extras.getString("description");
-		descTxt.replace("%20", " ");
 	}
 }

@@ -4,23 +4,26 @@ import java.io.Serializable;
 
 public class Response implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private int id;
+	private String id;
 	private String note;
 	private String author;
 	private String date;
+	private String wallId;
 
-	public Response(int id, String note, String author, String date) {
+	public Response(String id, String note, String author, String date,
+			String wallId) {
 		this.id = id;
 		this.setNote(note);
 		this.setAuthor(author);
 		this.setDate(date);
+		this.setWallId(wallId);
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -46,6 +49,14 @@ public class Response implements Serializable {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+
+	public String getWallId() {
+		return wallId;
+	}
+
+	public void setWallId(String wallId) {
+		this.wallId = wallId;
 	}
 
 }

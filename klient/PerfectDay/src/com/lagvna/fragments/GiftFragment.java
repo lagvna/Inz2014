@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -88,9 +87,7 @@ public class GiftFragment extends Fragment {
 		CustomRow_data.clear();
 		for (int i = 0; i < giftArr.size(); i++) {
 			String buyer = giftArr.get(i).getBuyer();
-			buyer.replace("%20", " ");
 			String name = giftArr.get(i).getName();
-			name.replace("%20", " ");
 			CustomRow_data.add(new CustomRow(R.drawable.lvsel, name, buyer));
 		}
 	}
@@ -114,6 +111,7 @@ public class GiftFragment extends Fragment {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

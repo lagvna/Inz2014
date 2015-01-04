@@ -95,7 +95,6 @@ public class AddContactActivity extends Activity {
 				}
 				eventId = DataHelper.getInstance().getEventId();
 
-				processInput();
 				if (!nameTxt.equals("brak")) {
 					addContact();
 				} else {
@@ -128,7 +127,7 @@ public class AddContactActivity extends Activity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void raiseError(String error) {
@@ -146,14 +145,6 @@ public class AddContactActivity extends Activity {
 		returnIntent.putExtra("id", id);
 		setResult(Activity.RESULT_OK, returnIntent);
 		System.out.println("JESTEM TUTAJ!");
-	}
-
-	private void processInput() {
-		emailTxt = emailTxt.replace("@", ".at.");
-		nameTxt = nameTxt.replace(" ", "%20");
-		emailTxt = emailTxt.replace(" ", "");
-		telephoneTxt = telephoneTxt.replace(" ", "");
-		noteTxt = noteTxt.replace(" ", "%20");
 	}
 
 	private void addContact() {

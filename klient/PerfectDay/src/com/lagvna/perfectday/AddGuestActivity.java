@@ -69,35 +69,19 @@ public class AddGuestActivity extends Activity {
 				}
 				eventId = DataHelper.getInstance().getEventId();
 
-				processInput();
 				if (!nameTxt.equals("brak") && !surnameTxt.equals("brak")) {
 					addGuest();
 				} else {
 					raiseError("Musisz podać przynajmniej imię i nazwisko gościa!");
 				}
-				cleanEditTexts();
+
 			}
 		});
-	}
-
-	private void processInput() {
-		emailTxt = emailTxt.replace("@", ".at.");
-		nameTxt = nameTxt.replace(" ", "");
-		surnameTxt = surnameTxt.replace(" ", "");
-		emailTxt = emailTxt.replace(" ", "");
-		telephoneTxt = telephoneTxt.replace(" ", "");
 	}
 
 	private void addGuest() {
 		new AddGuestTask(this, nameTxt, surnameTxt, emailTxt, telephoneTxt,
 				eventId).execute();
-	}
-
-	private void cleanEditTexts() {
-		name.setText("");
-		surname.setText("");
-		email.setText("");
-		telephone.setText("");
 	}
 
 	public void showProgressDial() {
@@ -107,7 +91,7 @@ public class AddGuestActivity extends Activity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void raiseError(String error) {
@@ -124,13 +108,5 @@ public class AddGuestActivity extends Activity {
 		returnIntent.putExtra("id", id);
 		setResult(Activity.RESULT_OK, returnIntent);
 		System.out.println("JESTEM TUTAJ!");
-	}
-
-	public void setNewGuest(String name, String surname, String email,
-			String phone, String eventid) {
-		Toast.makeText(
-				this,
-				name + " " + surname + " " + email + " " + telephone + " "
-						+ eventid, Toast.LENGTH_LONG).show();
 	}
 }

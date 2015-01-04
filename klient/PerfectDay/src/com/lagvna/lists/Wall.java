@@ -6,24 +6,24 @@ import java.util.List;
 
 public class Wall implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private long id;
+	private String id;
 	private String note;
 	private String author;
 	private String date;
 	private List<Response> responses = new ArrayList<Response>();
 
-	public Wall(long id, String note, String author, String date) {
+	public Wall(String id, String note, String author, String date) {
 		this.id = id;
 		this.setNote(note);
 		this.setAuthor(author);
 		this.setDate(date);
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

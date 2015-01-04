@@ -43,7 +43,6 @@ public class AddNoteActivity extends Activity {
 				if (!note.getText().toString().equals("")) {
 					noteTxt = note.getText().toString();
 					System.err.println(noteTxt);
-					processInput();
 					addNote();
 				} else {
 					raiseError("Musisz wpisać jakąś notatkę!");
@@ -63,7 +62,7 @@ public class AddNoteActivity extends Activity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void raiseError(String error) {
@@ -76,9 +75,5 @@ public class AddNoteActivity extends Activity {
 		returnIntent.putExtra("isDone", isDone);
 		returnIntent.putExtra("id", id);
 		setResult(Activity.RESULT_OK, returnIntent);
-	}
-
-	private void processInput() {
-		noteTxt = noteTxt.replace(" ", "%20");
 	}
 }

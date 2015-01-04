@@ -19,32 +19,31 @@ import android.widget.Toast;
 
 import com.lagvna.helpers.DataHelper;
 import com.lagvna.helpers.JSONParser;
-import com.lagvna.perfectday.UpdateEventActivity;
+import com.lagvna.perfectday.AddResponseActivity;
 
-public class AddEventTask extends AsyncTask<Void, Void, Void> {
-	private UpdateEventActivity callingActivity;
+public class AddResponseTask extends AsyncTask<Void, Void, Void> {
+	private AddResponseActivity callingActivity;
 	private String url;
 	private ArrayList<String> result;
 	private String message;
 
-	public AddEventTask(UpdateEventActivity callingActivity, String eventName,
-			String eventDate, String eventPlace, String eventDescription,
-			int isFormal) {
+	public AddResponseTask(AddResponseActivity callingActivity, String note,
+			String author, String wallId, String eventId) {
 		this.callingActivity = callingActivity;
 
 		try {
-			eventName = URLEncoder.encode(eventName, "utf-8");
-			eventPlace = URLEncoder.encode(eventPlace, "utf-8");
-			eventDate = URLEncoder.encode(eventDate, "utf-8");
-			eventDescription = URLEncoder.encode(eventDescription, "utf-8");
+			note = URLEncoder.encode(note, "utf-8");
+			author = URLEncoder.encode(author, "utf-8");
+			wallId = URLEncoder.encode(wallId, "utf-8");
+			eventId = URLEncoder.encode(eventId, "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
-		url = DataHelper.getInstance().getServerUrl() + "addevent?eventname="
-				+ eventName + "&eventdate=" + eventDate + "&eventplace="
-				+ eventPlace + "&eventdesc=" + eventDescription + "&isformal="
-				+ isFormal;
+		url = DataHelper.getInstance().getServerUrl() + "addresponse?note="
+				+ note + "&author=" + author + "&wallid=" + wallId
+				+ "&eventid=" + eventId;
+
 	}
 
 	@Override
@@ -69,11 +68,10 @@ public class AddEventTask extends AsyncTask<Void, Void, Void> {
 			String res = EntityUtils.toString(entity);
 			System.out.println(res);
 			JSONParser jp = new JSONParser(res);
-			result = jp.getAddEventTaskResult();
+			result = jp.getAddResponseTaskResult();
 			if (entity != null) {
 				if (result.get(0).equals("success")) {
 					message = result.get(1);
-					DataHelper.getInstance().setEventId(result.get(7));
 				} else {
 					message = "Coś poszło nie tak";
 				}
@@ -94,7 +92,7 @@ public class AddEventTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void arg) {
 		callingActivity.hideProgressDial();
-		callingActivity.setEventDetails(result.get(2), result.get(3),
+		callingActivity.setResponseDetails(result.get(2), result.get(3),
 				result.get(4), result.get(5), result.get(6));
 		callingActivity.runOnUiThread(new Runnable() {
 			public void run() {
@@ -102,7 +100,6 @@ public class AddEventTask extends AsyncTask<Void, Void, Void> {
 						.show();
 			}
 		});
-
 		callingActivity.finish();
 	}
 }

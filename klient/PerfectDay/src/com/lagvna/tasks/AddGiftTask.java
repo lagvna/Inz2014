@@ -1,6 +1,8 @@
 package com.lagvna.tasks;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -28,9 +30,21 @@ public class AddGiftTask extends AsyncTask<Void, Void, Void> {
 	public AddGiftTask(AddGiftActivity callingActivity, String name,
 			String shop, String link, String desc, String eventId) {
 		this.callingActivity = callingActivity;
+
+		try {
+			name = URLEncoder.encode(name, "utf-8");
+			shop = URLEncoder.encode(shop, "utf-8");
+			link = URLEncoder.encode(link, "utf-8");
+			desc = URLEncoder.encode(desc, "utf-8");
+			eventId = URLEncoder.encode(eventId, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 		url = DataHelper.getInstance().getServerUrl() + "addgift?name=" + name
 				+ "&shop=" + shop + "&link=" + link + "&description=" + desc
 				+ "&buyer=brak" + "&eventid=" + eventId;
+
 	}
 
 	@Override

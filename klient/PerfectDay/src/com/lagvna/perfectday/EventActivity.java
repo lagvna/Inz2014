@@ -18,8 +18,10 @@ import com.lagvna.adapters.TabsPagerAdapter;
 import com.lagvna.customtypes.Gift;
 import com.lagvna.customtypes.Note;
 import com.lagvna.helpers.DataHelper;
+import com.lagvna.lists.Wall;
 import com.lagvna.tasks.GetAllGiftsTask;
 import com.lagvna.tasks.GetAllNotesTask;
+import com.lagvna.tasks.GetWallTask;
 import com.lagvna.tasks.RemoveGiftTask;
 import com.lagvna.tasks.RemoveNoteTask;
 
@@ -29,6 +31,7 @@ public class EventActivity extends FragmentActivity implements
 
 	public ArrayList<Note> noteArr;
 	public ArrayList<Gift> giftArr;
+	public ArrayList<Wall> wallArr;
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	public TabsPagerAdapter mAdapter;
@@ -54,10 +57,13 @@ public class EventActivity extends FragmentActivity implements
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayUseLogoEnabled(false);
 
+		wallArr = new ArrayList<Wall>();
+
 		getExtras();
 
 		getNotes();
 		getGifts();
+		// getWall();
 
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
@@ -105,6 +111,10 @@ public class EventActivity extends FragmentActivity implements
 				.execute();
 	}
 
+	public void getWall() {
+		new GetWallTask(this, DataHelper.getInstance().getEventId()).execute();
+	}
+
 	public void showProgressDial() {
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setMessage("Łączenie z serwerem");
@@ -112,7 +122,7 @@ public class EventActivity extends FragmentActivity implements
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void raiseError(String error) {
@@ -130,24 +140,24 @@ public class EventActivity extends FragmentActivity implements
 		this.giftArr = giftArr;
 	}
 
+	public void createWall(ArrayList<Wall> wallArr) {
+		this.wallArr = wallArr;
+		mAdapter.wf.createList();
+	}
+
 	private void getExtras() {
 		Bundle extras = getIntent().getExtras();
 		name = extras.getString("name");
-		name.replace("_", " ");
 		place = extras.getString("place");
-		place.replace("_", " ");
 		date = extras.getString("date");
-		date.replace("_", " ");
 		code = extras.getString("code");
-		code.replace("_", " ");
 		description = extras.getString("description");
-		description.replace("_", " ");
 	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info;
-		
+
 		try {
 			info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		} catch (ClassCastException e) {
@@ -163,7 +173,7 @@ public class EventActivity extends FragmentActivity implements
 
 		return false;
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

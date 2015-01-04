@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
@@ -28,6 +29,7 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.UserInfoChangedCallback;
 import com.lagvna.helpers.DataHelper;
+import com.lagvna.tasks.GuestLoginTask;
 import com.lagvna.tasks.LoginTask;
 
 public class LoginActivity extends FragmentActivity {
@@ -70,42 +72,19 @@ public class LoginActivity extends FragmentActivity {
 				if (user != null) {
 					userName.setText("Witaj, " + user.getName()
 							+ ". Kim jesteś?");
+					DataHelper.getInstance().setAuthor(user.getName());
 				} else {
 					userName.setText("Nie jesteś zalogowany.");
 				}
 			}
 		});
 
-		codeDialog = new AlertDialog.Builder(this);
-		codeDialog.setIcon(R.drawable.ic_launcher);
-		codeDialog.setTitle("Wprowadź kod wydarzenia");
-		codeDialog.setMessage("Kod");
-
-		final EditText input = new EditText(this);
-		codeDialog.setView(input);
-		codeDialog.setPositiveButton("Ok",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						setCode(input.getText().toString());
-						Intent intent = new Intent(LoginActivity.this,
-								EventActivity.class);
-						LoginActivity.this.startActivity(intent);
-					}
-				});
-
-		codeDialog.setNegativeButton("Anuluj",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						setCode("");
-					}
-				});
-
 		guestBtn = (Button) findViewById(R.id.guest);
 		guestBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
-				codeDialog.show();
+				buildCodeDialog();
 			}
 		});
 
@@ -123,6 +102,58 @@ public class LoginActivity extends FragmentActivity {
 		buttonsEnabled(false);
 	}
 
+	private void buildCodeDialog() {
+		codeDialog = new AlertDialog.Builder(this);
+		codeDialog.setIcon(R.drawable.ic_launcher);
+		codeDialog.setTitle("Wprowadź kod wydarzenia");
+		codeDialog.setMessage("Kod");
+
+		final EditText input = new EditText(this);
+		input.setText("6n8hx");
+		codeDialog.setView(input);
+		codeDialog.setPositiveButton("Ok",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						if (!input.getText().toString().equals("")) {
+							setCode(input.getText().toString());
+
+							new GuestLoginTask(la, getCode()).execute();
+
+						} else {
+							raiseError("Musisz wprowadzić kod wydarzenia!");
+						}
+					}
+				});
+
+		codeDialog.setNegativeButton("Anuluj",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						setCode("");
+					}
+				});
+		codeDialog.show();
+	}
+
+	public void setEventDetails(String name, String place, String date,
+			String note, String code, String organizer, String id) {
+		Intent intent = new Intent(LoginActivity.this, GuestEventActivity.class);
+		DataHelper.getInstance().setEventId(id);
+
+		intent.putExtra("name", name);
+		intent.putExtra("place", place);
+		intent.putExtra("date", date);
+		intent.putExtra("note", note);
+		intent.putExtra("code", code);
+		intent.putExtra("organizer", organizer);
+
+		LoginActivity.this.startActivity(intent);
+
+	}
+
+	public void raiseError(String error) {
+		Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+	}
+
 	public void showProgressDial() {
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setMessage("Łączenie z serwerem");
@@ -130,22 +161,30 @@ public class LoginActivity extends FragmentActivity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void getCookies(Header[] headers) {
 		String[] tmp = new String[3];
 		int i = 0;
-
-		for (Header h : headers) {
-			if (h.getName().trim().equals("Set-Cookie")) {
-				tmp[i] = h.getValue().split(";")[0].trim();
-				System.err.println(tmp[i]);
-				i++;
+		try {
+			for (Header h : headers) {
+				if (h.getName().trim().equals("Set-Cookie")) {
+					tmp[i] = h.getValue().split(";")[0].trim();
+					System.err.println(tmp[i]);
+					i++;
+				}
 			}
+			DataHelper.getInstance().setCookies(tmp);
+			System.out.println("SESJA: "
+					+ DataHelper.getInstance().getSession());
+		} catch (Exception ex) {
+			Toast.makeText(this,
+					"Coś poszło nie tak! Sprawdź połączenie internetowe",
+					Toast.LENGTH_LONG).show();
+			buttonsEnabled(false);
+
 		}
-		DataHelper.getInstance().setCookies(tmp);
-		System.out.println("SESJA: " + DataHelper.getInstance().getSession());
 	}
 
 	private Session.StatusCallback statusCallback = new Session.StatusCallback() {

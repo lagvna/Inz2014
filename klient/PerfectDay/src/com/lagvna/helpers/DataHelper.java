@@ -12,6 +12,7 @@ public class DataHelper {
 	private String serverUrl;
 	private String login;
 	private String eventId;
+	private String author;
 	private Boolean isOrganizer = false;
 
 	private static final DataHelper dh = new DataHelper();
@@ -102,5 +103,13 @@ public class DataHelper {
 
 	public void setIsOrganizer(Boolean isOrganizer) {
 		this.isOrganizer = isOrganizer;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }

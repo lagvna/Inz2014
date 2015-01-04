@@ -1,6 +1,8 @@
 package com.lagvna.tasks;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -29,6 +31,18 @@ public class AddContactTask extends AsyncTask<Void, Void, Void> {
 			String sector, String email, String telephone, String note,
 			String eventId) {
 		this.callingActivity = callingActivity;
+
+		try {
+			name = URLEncoder.encode(name, "utf-8");
+			sector = URLEncoder.encode(sector, "utf-8");
+			email = URLEncoder.encode(email, "utf-8");
+			telephone = URLEncoder.encode(telephone, "utf-8");
+			note = URLEncoder.encode(note, "utf-8");
+			eventId = URLEncoder.encode(eventId, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 		url = DataHelper.getInstance().getServerUrl() + "addcontact?name="
 				+ name + "&sector=" + sector + "&email=" + email
 				+ "&telephone=" + telephone + "&note=" + note + "&eventid="

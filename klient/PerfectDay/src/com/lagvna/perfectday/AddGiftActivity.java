@@ -56,7 +56,6 @@ public class AddGiftActivity extends Activity {
 					shopTxt = shop.getText().toString();
 					linkTxt = link.getText().toString();
 					descriptionTxt = description.getText().toString();
-					processInput();
 					addGift();
 				} else {
 					raiseError("Musisz wpisać przynajmniej nazwę przedmiotu!");
@@ -64,13 +63,6 @@ public class AddGiftActivity extends Activity {
 			}
 		});
 
-	}
-
-	private void processInput() {
-		nameTxt = nameTxt.replace(" ", "%20");
-		shopTxt = shopTxt.replace(" ", "%20");
-		linkTxt = linkTxt.replace(" ", "%20");
-		descriptionTxt = descriptionTxt.replace(" ", "%20");
 	}
 
 	private void addGift() {
@@ -85,7 +77,7 @@ public class AddGiftActivity extends Activity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void raiseError(String error) {

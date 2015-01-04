@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.lagvna.helpers.DatePickerFragment;
 import com.lagvna.tasks.AddEventTask;
-import com.lagvna.tasks.UpdateEventTask;
 
 public class UpdateEventActivity extends FragmentActivity {
 	private ProgressDialog progressDialog;
@@ -30,7 +29,6 @@ public class UpdateEventActivity extends FragmentActivity {
 	private Button dateTxt;
 	private EditText placeTxt;
 	private EditText descriptionTxt;
-	private Boolean isNew;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,29 +70,14 @@ public class UpdateEventActivity extends FragmentActivity {
 		eventPlace = placeTxt.getText().toString();
 		eventDescription = descriptionTxt.getText().toString();
 
-		processInput();
-		
 		if (eventName.equals("") || eventDate.equals("")
 				|| eventPlace.equals("") || eventDescription.equals("")) {
 			Toast.makeText(this, "Wprowadź wszystkie dane!", Toast.LENGTH_LONG)
 					.show();
 		} else {
-			if (isNew) {
-				new AddEventTask(this, eventName, eventDate, eventPlace,
-						eventDescription, isFormal).execute();
-			} else {
-				new UpdateEventTask(this, eventName, eventDate, eventPlace,
-						eventDescription, isFormal).execute();
-
-			}
+			new AddEventTask(this, eventName, eventDate, eventPlace,
+					eventDescription, isFormal).execute();
 		}
-	}
-	
-	private void processInput()	{
-		eventName.replace(" ", "_");
-		eventDate.replace(" ", "_");
-		eventPlace.replace(" ", "_");
-		eventDescription.replace(" ", "_");
 	}
 
 	public void setEventDetails(String name, String place, String date,
@@ -111,7 +94,7 @@ public class UpdateEventActivity extends FragmentActivity {
 	private void getExtras() {
 		Bundle extras = getIntent().getExtras();
 		isFormal = extras.getInt("eventType");
-		isNew = extras.getBoolean("isNew");
+
 	}
 
 	public void showProgressDial() {
@@ -121,6 +104,6 @@ public class UpdateEventActivity extends FragmentActivity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 }

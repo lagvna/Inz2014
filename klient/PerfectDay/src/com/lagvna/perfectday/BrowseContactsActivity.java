@@ -162,10 +162,6 @@ public class BrowseContactsActivity extends Activity {
 			noteTxt = "";
 		}
 
-		emailTxt = emailTxt.replace(".at.", "@");
-		nameTxt = nameTxt.replace("%20", " ");
-		noteTxt = noteTxt.replace("%20", " ");
-
 		name.setText(nameTxt);
 		sector.setText(sectorTxt);
 		email.setText(emailTxt);
@@ -180,7 +176,7 @@ public class BrowseContactsActivity extends Activity {
 	}
 
 	public void hideProgressDial() {
-		progressDialog.hide();
+		progressDialog.dismiss();
 	}
 
 	public void raiseError(String error) {
