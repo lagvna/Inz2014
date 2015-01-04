@@ -40,7 +40,8 @@
 
         <activity
             android:name=".EventActivity"
-            android:label="@string/title_activity_event" >
+            android:label="@string/title_activity_event"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CompanyActivity"
@@ -81,6 +82,14 @@
         <activity
             android:name=".GiftDetailsActivity"
             android:label="@string/title_activity_gift_details" >
+        </activity>
+        <activity
+            android:name=".AddResponseActivity"
+            android:label="@string/title_activity_add_response" >
+        </activity>
+        <activity
+            android:name=".GuestEventActivity"
+            android:label="@string/title_activity_guest_event" >
         </activity>
     </application>
 

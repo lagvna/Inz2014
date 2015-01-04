@@ -9,12 +9,178 @@ from allauth.socialaccount.providers.facebook.views import fb_complete_login
 from allauth.socialaccount.helpers import complete_social_login
 from django.views.decorators.csrf import csrf_exempt
 from pdapp.models import *
+from datetime import datetime
+import random
+from django.utils.crypto import get_random_string
 
 
 def index(request):
     return render_to_response("pdapp/index.html", RequestContext(request))
 
 
+@csrf_exempt
+def android_guestlogin(request):
+    print(request.COOKIES)
+    response_data = {}
+    try:
+        if (request.user.is_authenticated()):
+            tmpEvent = Event.objects.get(code = request.GET['code'])
+            coName = tmpEvent.name
+            coPlace = tmpEvent.place
+            coDate = tmpEvent.date
+            coNote = tmpEvent.note
+            coCode = tmpEvent.code
+            coOrganizer = tmpEvent.organizer.username
+            coId = tmpEvent.id
+
+            response_data['result'] = 'success'
+            response_data['message'] = 'Pomyslnie pobrano szczegoly wydarzenia'
+            response_data['name'] = coName
+            response_data['place'] = coPlace
+            response_data['date'] = coDate
+            response_data['note'] = coNote
+            response_data['code'] = coCode
+            response_data['organizer'] = coOrganizer
+            response_data['id'] = coId
+
+
+            print('okej')
+            user = request.user
+            print(user.id)
+            print(request.session.session_key)
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+    except Exception:
+        print('zle')
+        response_data['result'] = 'failure'
+        response_data['message'] = 'Nie ma takiego wydarzenia!'
+        response_data['name'] = ''
+        response_data['place'] = ''
+        response_data['date'] = ''
+        response_data['note'] = ''
+        response_data['code'] = ''
+        response_data['organizer'] = ''
+        response_data['id'] = ''
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        print('zle')
+        response_data['result'] = 'failure'
+        response_data['message'] = 'Blad!'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+@csrf_exempt
+def gencode(request):
+    try:
+        tmpEvent = Event.objects.get(code = request.GET['code'])
+        return HttpResponse(json.dumps(tmpEvent.name), content_type='application/json')
+    except Exception:
+        return HttpResponse(json.dumps('gawno'), content_type='application/json')
+
+
+
+
+
+@csrf_exempt
+def android_getwall(request):
+    print(request.COOKIES)
+    response_data = {}
+    response_wall = []
+    if (request.user.is_authenticated()):
+        tmpEvent = Event.objects.filter(id = request.GET['eventid'])
+        tmpWall = Wall.objects.filter(event = tmpEvent)
+        for a in tmpWall:
+            aNote = a.note
+            aAuthor = a.author
+            aDate = str( a.pub_date )
+            aId = a.id
+            aResponses = []
+            tmpResponses = Response.objects.filter(wall = a)
+            for b in tmpResponses:
+                bNote = b.note
+                bAuthor = b.author
+                bDate = str( b.pub_date)
+                bId = b.id
+                bWallid = a.id
+                resp = {'id': bId, 'note': bNote, 'author': bAuthor, 'date': bDate, 'wallid': bWallid}
+                aResponses.append(resp)
+
+            record = {'id': aId, 'note': aNote, 'author': aAuthor, 'date': aDate, 'responses': aResponses}
+            print record
+            response_wall.append(record)
+
+        response_data['wall'] = response_wall
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie pobrano cala dyskusje'
+
+        print('okej')
+        user = request.user
+        print(user.id)
+        print(request.session.session_key)
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        print('zle')
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+@csrf_exempt
+def android_addresponse(request):
+    print(request.COOKIES)
+    response_data = {}
+    if (request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['wallid'])
+        tmpWall = Wall.objects.get(id=tmpId)
+
+        print('okej')
+        print(user.id)
+        print(request.session.session_key)
+        new_response = Response(author=request.GET['author'], wall=tmpWall, pub_date=datetime.now(),
+                        note=request.GET['note'])
+        new_response.save()
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie dodano odpowiedz'
+        response_data['note'] = new_response.note
+        response_data['author'] = new_response.author
+        date = str( new_response.pub_date )
+        response_data['date'] = date
+        response_data['wallid'] = tmpId
+        response_data['id'] = new_response.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+
+@csrf_exempt
+def android_addwall(request):
+    print(request.COOKIES)
+    response_data = {}
+    if (request.user.is_authenticated()):
+        user = request.user
+        tmpId = int(request.GET['eventid'])
+        tmpEvent = Event.objects.get(id=tmpId)
+
+        print('okej')
+        print(user.id)
+        print(request.session.session_key)
+        new_wall = Wall(author=request.GET['author'], event=tmpEvent, pub_date=datetime.now(),
+                        note=request.GET['note'])
+        new_wall.save()
+        response_data['result'] = 'success'
+        response_data['message'] = 'Pomyslnie dodano watek'
+        response_data['note'] = new_wall.note
+        response_data['author'] = new_wall.author
+        date = str( new_wall.pub_date )
+        response_data['date'] = date
+        response_data['id'] = new_wall.id
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        response_data['result'] = 'failure'
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+@csrf_exempt
 def android_getallgifts(request):
     print(request.COOKIES)
     response_data = {}
@@ -386,14 +552,31 @@ def android_addevent(request):
         print('okej')
         print(user.id)
         print(request.session.session_key)
+        letters = get_random_string(length=3, allowed_chars='abcdefghijklmnopqrstuvwxyz')
+        numbers = get_random_string(length=2, allowed_chars='0123456789')
+        tmpCode = u'' + letters + numbers
+
+        l = list(tmpCode)
+        random.shuffle(l)
+        random_number = ''.join(l)
+
+        while Event.objects.filter(code=random_number):
+            letters = get_random_string(length=3, allowed_chars='abcdefghijklmnopqrstuvwxyz')
+            numbers = get_random_string(length=2, allowed_chars='0123456789')
+            tmpCode = u'' + letters + numbers
+
+            l = list(tmpCode)
+            random.shuffle(l)
+            random_number = ''.join(l)
+
         if (request.GET['isformal'] == 1):
             new_event = Event(name=request.GET['eventname'], place=request.GET['eventplace'],
                               date=request.GET['eventdate'], note=request.GET['eventdesc'],
-                              isFormal=True, code='none', organizer=request.user)
+                              isFormal=True, code=random_number, organizer=request.user)
         else:
             new_event = Event(name=request.GET['eventname'], place=request.GET['eventplace'],
                               date=request.GET['eventdate'], note=request.GET['eventdesc'],
-                              isFormal=False, code='none', organizer=request.user)
+                              isFormal=False, code=random_number, organizer=request.user)
         new_event.save()
         # print(new_event)
         response_data['result'] = 'success'

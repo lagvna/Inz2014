@@ -18,6 +18,7 @@
     <color name="yellow">#FFFF80</color>
     <color name="darkGreen">#44A436</color>
     <color name="very_light_gray">#C3C3C3</color>
+    <color name="red">#FF0000</color>
 
     <string name="title_activity_add_advert">AddAdvertActivity</string>
     <string name="title_activity_browse_adverts">BrowseAdvertsActivity</string>
@@ -40,5 +41,7 @@
     <string name="title_activity_add_note">AddNoteActivity</string>
     <string name="title_activity_add_gift">AddGiftActivity</string>
     <string name="title_activity_gift_details">GiftDetailsActivity</string>
+    <string name="title_activity_add_response">AddResponseActivity</string>
+    <string name="title_activity_guest_event">GuestEventActivity</string>
 
 </resources>
