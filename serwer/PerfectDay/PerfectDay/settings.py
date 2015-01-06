@@ -52,6 +52,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
+LOGIN_REDIRECT_URL = 'index'
+
 # Application definition
 
 INSTALLED_APPS = (

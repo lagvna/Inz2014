@@ -1,7 +1,8 @@
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
+from django.db import models
+from django.forms import ModelForm
 
 class Event(models.Model):
     name = models.CharField(max_length = 200)
@@ -52,3 +53,7 @@ class Response(models.Model):
     pub_date = models.DateTimeField('date published')
     note = models.CharField(max_length = 3000)
 
+class EventForm(ModelForm):
+    class Meta:
+        model = Event
+        fields = ['name', 'place', 'date', 'note']

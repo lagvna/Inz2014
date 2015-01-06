@@ -37,26 +37,7 @@
     <div class="jumbotron">
         <p class="lead"></p>
 
-        {% if request.user.is_authenticated %}
-            <div class="who">
-                <a class="btn btn-primary" href="{% url 'wgetallevents' %}">Rozpocznij organizację!</a>
-                <form method="post" action="{% url 'account_logout' %}">
-                    {% csrf_token %}
-                    <input type='hidden' name='/index' value='/index'/>
-                    <input type="hidden" name="next" value="/pdapp/"/>
-                    <button class="btn-link pull-right ">Wyloguj</button>
-                </form>
-            </div>
-
-
-
-        {% else %}
-            <a href="accounts/facebook/login/">
-                <button type="button" class="btn btn-primary" id="fb_login">Facebook login</button>
-            </a>
-        {% endif %}
-
-
+        <h1>Błąd!</h1>
     </div>
     <!-- /container -->
 

@@ -31,15 +31,60 @@
     <div class="masthead">
         <h3 class="text-muted"><img src="{% static "pdlogo.png" %}" class="center-block img-rounded"
                                     alt="PerfectDay"></h3>
+        <nav>
+            <ul class="nav nav-justified">
+                <li class="active"><a href="#">Podsumowanie</a></li>
+                <li><a href="{% url 'wgetallguests' event.id %}">Lista gości</a></li>
+                <li><a href="{% url 'wgetallcontacts' event.id %}">Skorowidz</a></li>
+                <li><a href="{% url 'wgetwall' ev %}">Tablica</a></li>
+                <li><a href="{% url 'wgetallgifts' ev %}">Prezenty/Przedmioty</a></li>
+                <li><a href="{% url 'wgetallnotes' ev %}">Notatki</a></li>
+            </ul>
+        </nav>
     </div>
 
     <!-- Jumbotron -->
+
+    <div class="row center-block">
+        <div class="col-sm-5">
+            <h2>Nazwa wydarzenia</h2>
+
+            <p>{{ event.name }}</p>
+
+        </div>
+        <div class="col-sm-5">
+            <h2>Data</h2>
+
+            <p>{{ event.date }}</p>
+
+        </div>
+        <div class="col-sm-5">
+            <h2>Miejsce</h2>
+
+            <p>{{ event.place }}</p>
+        </div>
+        <div class="col-sm-5">
+            <h2>Organizator</h2>
+
+            <p>{{ event.organizer }}</p>
+        </div>
+        <div class="col-sm-5">
+            <h2>Opis</h2>
+
+            <p>{{ event.note }}</p>
+        </div>
+        <div class="col-sm-5">
+            <h2>Kod imprezy</h2>
+
+            <p>{{ event.code }}</p>
+        </div>
+    </div>
+
     <div class="jumbotron">
         <p class="lead"></p>
 
         {% if request.user.is_authenticated %}
             <div class="who">
-                <a class="btn btn-primary" href="{% url 'wgetallevents' %}">Rozpocznij organizację!</a>
                 <form method="post" action="{% url 'account_logout' %}">
                     {% csrf_token %}
                     <input type='hidden' name='/index' value='/index'/>
@@ -49,14 +94,12 @@
             </div>
 
 
-
         {% else %}
+            <h1>Nie jesteś zalogowany!</h1>
             <a href="accounts/facebook/login/">
-                <button type="button" class="btn btn-primary" id="fb_login">Facebook login</button>
+                <button type="button" class="btn btn-primary" id="fb_login">Login with Facebook</button>
             </a>
         {% endif %}
-
-
     </div>
     <!-- /container -->
 

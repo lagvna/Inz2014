@@ -1,0 +1,157 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>PerfectDay</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static "justified-nav.css" %}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+
+<div class="container">
+
+    <div class="masthead">
+        <h3 class="text-muted"><img src="{% static "pdlogo.png" %}" class="center-block img-rounded"
+                                    alt="PerfectDay"></h3>
+        <nav>
+            <ul class="nav nav-justified">
+                <li><a href="{% url 'wgetevent' ev %}">Podsumowanie</a></li>
+                <li><a href="{% url 'wgetallguests' ev %}">Lista gości</a></li>
+                <li><a href="{% url 'wgetallcontacts' ev %}">Skorowidz</a></li>
+                <li><a href="{% url 'wgetwall' ev %}">Tablica</a></li>
+                <li class="active"><a href="#">Prezenty/Przedmioty</a></li>
+                <li><a href="{% url 'wgetallnotes' ev %}">Notatki</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    {% if request.user.is_authenticated %}
+        <h2>Dodaj pozycję:</h2>
+
+        <form class="form-horizontal" method="get" action="{% url 'waddgift' ev %}" role="form">
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="name">Nazwa:</label>
+
+                <div class="col-sm-10">
+                    <input type="text" name="name" class="form-control" id="name"
+                           placeholder="Podaj nazwę">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="link">Link:</label>
+
+                <div class="col-sm-10">
+                    <input class="form-control" name="link" id="link"
+                           placeholder="Podaj link">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="shop">Sklep:</label>
+
+                <div class="col-sm-10">
+                    <input class="form-control" id="shop" name="shop"
+                           placeholder="Podaj nazwę sklepu:">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="description">Opis:</label>
+
+                <div class="col-sm-10">
+                    <input class="form-control" id="description" name="description" placeholder="Podaj opis:">
+                    <input class="form-control" id="buyer" name="buyer"
+                           type="hidden" value="brak">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-1 col-sm-10">
+                    <button type="submit" class="btn btn-default">Dodaj</button>
+                    {% if error %}
+                        <p style="color: red;">Musisz podać przynajmniej nazwę pozycji!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for gift in gifts %}
+                <tr>
+                    <td>
+                        <div class="row center-block">
+                            <div class="col-lg-4">
+                                <h2>{{ gift.name }}</h2>
+
+                                <p>Opis: {{ gift.description }}</p>
+
+                                <p>Sklep: {{ gift.shop }}</p>
+
+                                <p>Link: {{ gift.link }}</p>
+
+                                <p>Kupujący: {{ gift.buyer }}</p>
+
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <form action="{% url 'wremovegift' ev %}" method="get">
+                            <input type="hidden" name="id" value="{{ gift.id }}">
+                            <input type="hidden" name="type" value="gift">
+                            <input class="btn btn-danger" type="submit" value="Usuń">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+        <div class="who">
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <input type='hidden' name='/index' value='/index'/>
+                <input type="hidden" name="next" value="/pdapp/"/>
+                <button class="btn-link pull-right ">Wyloguj</button>
+            </form>
+        </div>
+
+
+    {% else %}
+        <h1>Nie jesteś zalogowany!</h1>
+        <a href="accounts/facebook/login/">
+            <button type="button" class="btn btn-primary" id="fb_login">Login with Facebook</button>
+        </a>
+    {% endif %}
+    <!-- /container -->
+
+    <!-- Site footer -->
+    <footer class="footer">
+        <p>&copy; Jarosław Mirek 2015</p>
+    </footer>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static "js/ie10-viewport-bug-workaround.js" %}"></script>
+</div>
+</body>
+b
+</html>
